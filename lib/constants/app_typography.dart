@@ -9,7 +9,7 @@ class AppTypography {
 
   // Header Text Styles (Adriane Text)
   static const TextStyle headingXLarge = TextStyle(
-    fontFamily: 'AdrianText',
+    fontFamily: 'AdrianeText',
     fontSize: 48,
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
@@ -18,7 +18,7 @@ class AppTypography {
   );
 
   static const TextStyle headingLarge = TextStyle(
-    fontFamily: 'AdrianText',
+    fontFamily: 'AdrianeText',
     fontSize: 36,
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
@@ -27,7 +27,7 @@ class AppTypography {
   );
 
   static const TextStyle headingMedium = TextStyle(
-    fontFamily: 'AdrianText',
+    fontFamily: 'AdrianeText',
     fontSize: 28,
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
@@ -36,7 +36,7 @@ class AppTypography {
   );
 
   static const TextStyle headingSmall = TextStyle(
-    fontFamily: 'AdrianText',
+    fontFamily: 'AdrianeText',
     fontSize: 24,
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
@@ -53,7 +53,7 @@ class AppTypography {
   );
 
   static const TextStyle bodyMedium = TextStyle(
-    fontFamily: 'Gordita',
+    fontFamily: 'Inter',
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
@@ -61,16 +61,16 @@ class AppTypography {
   );
 
   static const TextStyle bodySmall = TextStyle(
-    fontFamily: 'Gordita',
+    fontFamily: 'Inter',
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.textSecondary,
     height: 1.5,
   );
 
-  // Label Text Styles (Gordita)
+  // Label Text Styles (Inter)
   static const TextStyle labelLarge = TextStyle(
-    fontFamily: 'Gordita',
+    fontFamily: 'Inter',
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
@@ -79,7 +79,7 @@ class AppTypography {
   );
 
   static const TextStyle labelMedium = TextStyle(
-    fontFamily: 'Gordita',
+    fontFamily: 'Inter',
     fontSize: 14,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
@@ -88,7 +88,7 @@ class AppTypography {
   );
 
   static const TextStyle labelSmall = TextStyle(
-    fontFamily: 'Gordita',
+    fontFamily: 'Inter',
     fontSize: 12,
     fontWeight: FontWeight.w600,
     color: AppColors.textSecondary,
@@ -96,9 +96,9 @@ class AppTypography {
     letterSpacing: 0.2,
   );
 
-  // Caption Text Styles (Gordita)
+  // Caption Text Styles (Inter)
   static const TextStyle caption = TextStyle(
-    fontFamily: 'Gordita',
+    fontFamily: 'Inter',
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.textTertiary,
@@ -106,11 +106,10 @@ class AppTypography {
   );
 
   static const TextStyle captionSmall = TextStyle(
-    fontFamily: 'Gordita',
+    fontFamily: 'Inter',
     fontSize: 11,
     fontWeight: FontWeight.w400,
     color: AppColors.textTertiary,
     height: 1.3,
   );
 }
-//bagong lagay

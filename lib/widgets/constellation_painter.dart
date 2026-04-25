@@ -28,9 +28,9 @@ class ConstellationPainter extends CustomPainter {
     // Create paint for drawing lines
     final linePaint = Paint()
       // Use primary color (teal) for lines
-      ..color = const Color(0xFF00F5D4).withValues(alpha: 0.6)
+      ..color = const Color(0xFF131415).withValues(alpha: 0.6)
       // Set line width
-      ..strokeWidth = 1.5
+      ..strokeWidth = 1.0
       // Use round line caps for smoother appearance
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
@@ -56,9 +56,9 @@ class ConstellationPainter extends CustomPainter {
   /// Draw a small decorative circle at the center node
   void _drawCenterCircle(Canvas canvas) {
     final circlePaint = Paint()
-      ..color = const Color(0xFF00F5D4).withValues(alpha: 0.3)
+      ..color = const Color(0xFF131415).withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
 
     // Draw circle with radius 60 (center node is 120 diameter)
     canvas.drawCircle(center, 60, circlePaint);

@@ -5,15 +5,7 @@ import 'package:sikhay/constants/app_typography.dart';
 import 'package:sikhay/models/onboarding_model.dart';
 import 'package:sikhay/widgets/widgets.dart';
 
-/// Onboarding screen with PageView for multi-step onboarding flow.
-/// 
-/// Step 1: Language selection (English, Tagalog, Bisaya)
-/// Step 2: Subject selection (Science, English, Math)
-/// 
-/// Uses PageView.builder for smooth sliding transitions between steps.
-/// Implements null-safe code with proper state management.
 class OnboardingScreen extends StatefulWidget {
-  /// Callback triggered when onboarding is completed
   final VoidCallback onOnboardingComplete;
 
   const OnboardingScreen({
@@ -26,50 +18,10 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  /// Controller for PageView to manage page transitions
-  late PageController _pageController;
-
-  /// Currently selected language
   Language? _selectedLanguage;
-
-  /// Set of selected subjects (multiple selection allowed)
   final Set<String> _selectedSubjects = {};
 
-  /// Current page index (0 = language, 1 = subjects)
-  int _currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  /// Navigate to the next page in the PageView
-  void _nextPage() {
-    _pageController.nextPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  /// Navigate to the previous page in the PageView
-  void _previousPage() {
-    _pageController.previousPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  /// Handle completion of onboarding
   void _completeOnboarding() {
-    // Here you would typically save the selected language and subjects
-    // to local storage or pass them to the app state
     widget.onOnboardingComplete();
   }
 
@@ -78,92 +30,42 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        // SafeArea ensures content is not obscured by system UI
         child: Column(
-          // Column for vertical arrangement of PageView and controls
           children: [
-            // Expanded PageView for the main content
             Expanded(
-              child: PageView.builder(
-                // PageView.builder for efficient page rendering
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                physics: const NeverScrollableScrollPhysics(),
-                // Disable swipe to enforce button-based navigation
-                itemCount: 2,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    // Step 1: Language Selection
-                    return _buildLanguageSelectionPage();
-                  } else {
-                    // Step 2: Subject Selection
-                    return _buildSubjectSelectionPage();
-                  }
-                },
-              ),
+              child: _buildUnifiedSelectionPage(),
             ),
-
-            // Bottom navigation buttons
+            // Bottom Action Area
             Padding(
               padding: const EdgeInsets.all(AppSpacing.paddingLarge),
-              child: Row(
-                // Row for horizontal arrangement of navigation buttons
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Back button (visible on step 2)
-                  if (_currentPage > 0)
-                    OutlinedButton(
-                      onPressed: _previousPage,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.paddingLarge,
-                          vertical: AppSpacing.paddingMedium,
-                        ),
-                        side: const BorderSide(
-                          color: AppColors.borderMedium,
-                          width: 1.5,
-                        ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: (_selectedLanguage != null && _selectedSubjects.isNotEmpty)
+                          ? _completeOnboarding
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.secondary,
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.paddingMedium),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
                         ),
+                        disabledBackgroundColor: AppColors.borderMedium,
                       ),
                       child: Text(
-                        'Back',
-                        style: AppTypography.labelMedium.copyWith(
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    )
-                  else
-                    const SizedBox.shrink(),
-
-                  // Next/Complete button
-                  ElevatedButton(
-                    onPressed: _currentPage == 0
-                        ? (_selectedLanguage != null ? _nextPage : null)
-                        : (_selectedSubjects.isNotEmpty ? _completeOnboarding : null),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.neutral,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.paddingLarge,
-                        vertical: AppSpacing.paddingMedium,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
-                      ),
-                      disabledBackgroundColor: AppColors.borderMedium,
-                    ),
-                    child: Text(
-                      _currentPage == 0 ? 'Next' : 'Start My Journey',
-                      style: AppTypography.labelMedium.copyWith(
-                        color: AppColors.neutral,
+                        'Start My Journey',
+                        style: AppTypography.labelMedium.copyWith(color: AppColors.secondary),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: AppSpacing.marginSmall),
+                  Text(
+                    'No subscription required to explore the map.',
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textTertiary),
                   ),
                 ],
               ),
@@ -174,121 +76,54 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  /// Build the language selection page (Step 1)
-  Widget _buildLanguageSelectionPage() {
+  Widget _buildUnifiedSelectionPage() {
     return SingleChildScrollView(
-      // SingleChildScrollView for scrollable content
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.paddingLarge,
-        vertical: AppSpacing.paddingLarge,
-      ),
+      padding: const EdgeInsets.all(AppSpacing.paddingLarge),
       child: Column(
-        // Column for vertical arrangement of page content
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Decorative icon
-          const Icon(
-            Icons.auto_awesome,
-            color: AppColors.primary,
-            size: 64,
+          Image.asset(
+            '../assets/images/sikhay-logo.png',
+            width: 64,
+            height: 64,
+            fit: BoxFit.contain,
           ),
-          const SizedBox(height: AppSpacing.marginLarge),
 
-          // Main heading
-          RichText(
-            // RichText for mixed text styling
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Learn Anything.\n',
-                  style: AppTypography.headingXLarge.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                TextSpan(
-                  text: 'In Any Language.',
-                  style: AppTypography.headingXLarge.copyWith(
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
           const SizedBox(height: AppSpacing.marginLarge),
-
-          // Subheading
           Text(
-            'Pick a Language',
-            style: AppTypography.headingMedium.copyWith(
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.marginSmall),
-
-          // Step indicator
-          Text(
-            'Step 1 of 2',
-            style: AppTypography.caption.copyWith(
-              color: AppColors.textTertiary,
-            ),
+            'Ang tulay mula sa salita patungo sa unawa.',
+            style: AppTypography.headingSmall.copyWith(color: AppColors.textPrimary),
           ),
           const SizedBox(height: AppSpacing.marginLarge),
 
-          // Language selection grid
+          // --- LANGUAGE SECTION ---
+          _sectionHeader('Pick a Language'),
+          const SizedBox(height: AppSpacing.marginMedium),
           GridView.builder(
-            // GridView.builder for efficient language card rendering
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: AppSpacing.marginMedium,
               mainAxisSpacing: AppSpacing.marginMedium,
-              childAspectRatio: 1.5,
+              childAspectRatio: 1.8, // Adjusted for the new horizontal card look
             ),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
             itemCount: availableLanguages.length,
             itemBuilder: (context, index) {
               final language = availableLanguages[index];
-              return LanguageCard(
+              return CustomLanguageCard(
                 language: language,
                 isSelected: _selectedLanguage == language,
-                onTap: () {
-                  setState(() {
-                    _selectedLanguage = language;
-                  });
-                },
+                onTap: () => setState(() => _selectedLanguage = language),
               );
             },
           ),
-        ],
-      ),
-    );
-  }
 
-  /// Build the subject selection page (Step 2)
-  Widget _buildSubjectSelectionPage() {
-    return SingleChildScrollView(
-      // SingleChildScrollView for scrollable content
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.paddingLarge,
-        vertical: AppSpacing.paddingLarge,
-      ),
-      child: Column(
-        // Column for vertical arrangement of page content
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Heading
-          Text(
-            'What do you want to learn?',
-            style: AppTypography.headingMedium.copyWith(
-              color: AppColors.textPrimary,
-            ),
-          ),
           const SizedBox(height: AppSpacing.marginLarge),
 
-          // Subject selection buttons
+          // --- SUBJECT SECTION ---
+          _sectionHeader('What do you want to learn?'),
+          const SizedBox(height: AppSpacing.marginMedium),
           Wrap(
-            // Wrap for flexible arrangement of subject buttons
             spacing: AppSpacing.marginMedium,
             runSpacing: AppSpacing.marginMedium,
             children: availableSubjects.map((subject) {
@@ -307,16 +142,79 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               );
             }).toList(),
           ),
-          const SizedBox(height: AppSpacing.marginLarge),
-
-          // Info text
-          Text(
-            'No subscription required to explore the map.',
-            style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textTertiary,
-            ),
-          ),
         ],
+      ),
+    );
+  }
+
+  Widget _sectionHeader(String title) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        title,
+        style: AppTypography.headingMedium.copyWith(color: AppColors.textPrimary),
+      ),
+    );
+  }
+}
+
+// --- THIS IS THE SEPARATE WIDGET FOR THE GLOWING CARD ---
+class CustomLanguageCard extends StatelessWidget {
+  final Language language;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const CustomLanguageCard({
+    super.key,
+    required this.language,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color baseCardColor = const Color(0xFF1B262C); // Darker background
+    final Color selectedTeal = const Color(0xFF1ABC9C); 
+    final Color mintTealText = const Color(0xFF2ECC71); 
+    final Color unselectedBorder = const Color(0xFF1ABC9C).withValues(alpha: 0.3);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF163C40) : baseCardColor,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+          border: Border.all(
+            color: isSelected ? selectedTeal : unselectedBorder,
+            width: isSelected ? 2.0 : 1.0,
+          ),
+          boxShadow: [
+            if (isSelected)
+              BoxShadow(
+                color: selectedTeal.withValues(alpha: 0.4),
+                blurRadius: 15,
+                spreadRadius: 2,
+              ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                language.name,
+                style: AppTypography.labelMedium.copyWith(
+                  color: isSelected ? mintTealText : Colors.white,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -9,6 +9,8 @@ class Language {
     required this.flagEmoji,
     required this.code,
   });
+
+  Null get flagAsset => null;
 }
 
 /// Model representing a subject option for onboarding.

@@ -43,7 +43,7 @@ class ConceptNode {
           'Think of a plant as a solar-powered food factory. Using sunlight as fuel, leaves take in carbon dioxide from the air and water from the soil. Through this chemical magic, they create glucose to grow and release fresh oxygen for us to breathe.',
       subject: 'Biology',
       level: 'Level 2',
-      colorCode: '#00F5D4',
+      colorCode: '#FF131415',
       relatedNodes: [
         ConceptNode(
           id: 'chlorophyll',

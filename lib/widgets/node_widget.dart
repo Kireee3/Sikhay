@@ -149,11 +149,6 @@ class _NodeWidgetState extends State<NodeWidget>
                   // Optional: Icon for center node
                   if (widget.isCenter) ...[
                     const SizedBox(height: AppSpacing.marginSmall),
-                    Icon(
-                      Icons.star,
-                      color: widget.color ?? AppColors.primary,
-                      size: widget.isCenter ? 20 : 16,
-                    ),
                   ],
                 ],
               ),

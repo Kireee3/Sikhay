@@ -78,9 +78,9 @@ class HomeDashboardScreen extends StatelessWidget {
                     // Navigate to explore topics
                   },
                   child: Text(
-                    'See all categories →',
+                    '→',
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.primary,
+                      color: AppColors.background,
                     ),
                   ),
                 ),
@@ -109,34 +109,10 @@ class HomeDashboardScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Day counter with flame emoji
-            Row(
-              children: [
-                const Icon(
-                  Icons.local_fire_department,
-                  color: AppColors.secondary,
-                  size: AppSpacing.iconMedium,
-                ),
-                const SizedBox(width: AppSpacing.marginSmall),
-                Text(
-                  'Day 7',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
-            ),
+
             // User avatar placeholder
             Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.surfaceLight,
-              ),
-              child: const Icon(
-                Icons.person,
-                color: AppColors.textSecondary,
-              ),
+              
             ),
           ],
         ),

@@ -237,7 +237,7 @@ class _LessonCardState extends State<LessonCard> {
                     'Textual Based',
                     style: AppTypography.labelMedium.copyWith(
                       color: _contentType == 'textual'
-                          ? AppColors.neutral
+                          ? AppColors.secondary
                           : AppColors.textSecondary,
                       fontWeight: _contentType == 'textual'
                           ? FontWeight.w600
@@ -275,7 +275,7 @@ class _LessonCardState extends State<LessonCard> {
                     'Contextual Based',
                     style: AppTypography.labelMedium.copyWith(
                       color: _contentType == 'contextual'
-                          ? AppColors.neutral
+                          ? AppColors.secondary
                           : AppColors.textSecondary,
                       fontWeight: _contentType == 'contextual'
                           ? FontWeight.w600

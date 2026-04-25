@@ -158,7 +158,7 @@ class VoyageCard extends StatelessWidget {
                       child: Text(
                         'Resume Study',
                         style: AppTypography.labelMedium.copyWith(
-                          color: AppColors.neutral,
+                          color: AppColors.secondary,
                         ),
                       ),
                     ),

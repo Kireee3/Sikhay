@@ -58,7 +58,7 @@ class ContentToggle extends StatelessWidget {
                     'Textual Based',
                     style: AppTypography.labelMedium.copyWith(
                       color: selectedContentType == 'textual'
-                          ? AppColors.neutral
+                          ? AppColors.secondary
                           : AppColors.textSecondary,
                       fontWeight: selectedContentType == 'textual'
                           ? FontWeight.w600
@@ -94,7 +94,7 @@ class ContentToggle extends StatelessWidget {
                     'Contextual Based',
                     style: AppTypography.labelMedium.copyWith(
                       color: selectedContentType == 'contextual'
-                          ? AppColors.neutral
+                          ? AppColors.secondary
                           : AppColors.textSecondary,
                       fontWeight: selectedContentType == 'contextual'
                           ? FontWeight.w600

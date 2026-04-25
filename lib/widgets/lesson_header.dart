@@ -45,7 +45,7 @@ class _LessonHeaderState extends State<LessonHeader> {
       // Container with background color and padding
       color: AppColors.background,
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.paddingLarge,
+        horizontal: AppSpacing.paddingSmall,
         vertical: AppSpacing.paddingMedium,
       ),
       child: SafeArea(
@@ -119,7 +119,7 @@ class _LessonHeaderState extends State<LessonHeader> {
                           language.label,
                           style: AppTypography.labelMedium.copyWith(
                             color: isSelected
-                                ? AppColors.neutral
+                                ? AppColors.secondary
                                 : AppColors.textSecondary,
                             fontWeight: isSelected
                                 ? FontWeight.w600
