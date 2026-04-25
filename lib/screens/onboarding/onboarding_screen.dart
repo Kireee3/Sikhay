@@ -1,3 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../models/user_profile.dart'; // Your brand new model!
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_spacing.dart';
@@ -65,11 +70,80 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  /// Handle completion of onboarding
-  void _completeOnboarding() {
-    // Here you would typically save the selected language and subjects
-    // to local storage or pass them to the app state
-    widget.onOnboardingComplete();
+  /// Handle Google Sign-In (Cross-Platform)
+  /// Handle Google Sign-In (Cross-Platform)
+  Future<void> _signInWithGoogle() async {
+    try {
+      if (kIsWeb) {
+        // THE WEB SHORTCUT
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      } else {
+        // THE MOBILE FLOW
+        final googleSignIn = GoogleSignIn.instance;
+        await googleSignIn.initialize(); 
+
+        final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
+        if (googleUser == null) return; 
+
+        final clientAuth = await googleUser.authorizationClient.authorizeScopes(['email', 'profile']);
+        final googleAuth = googleUser.authentication;
+
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: clientAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      }
+
+      // ==========================================
+      // STEP 2: THE DATABASE SAVE LOGIC GOES HERE!
+      // ==========================================
+      final User? currentUser = FirebaseAuth.instance.currentUser;
+      
+      if (currentUser != null) {
+        final userRef = FirebaseFirestore.instance.collection('users').doc(currentUser.uid);
+        final docSnapshot = await userRef.get();
+
+        // ONLY save if they don't exist yet (First time logging in!)
+        if (!docSnapshot.exists) {
+          
+          // 1. Create the strongly-typed UserProfile object
+          final newUserProfile = UserProfile(
+            id: currentUser.uid,
+            displayName: currentUser.displayName ?? 'New Learner',
+            preferredLanguage: _selectedLanguage?.name ?? 'en',
+            xp: 0,
+            level: 1,
+            // Pass the subjects they selected on screen 2
+            downloadedTopics: _selectedSubjects.toList(), 
+          );
+
+          // 2. Save it securely using your custom toMap() function
+          await userRef.set(newUserProfile.toMap());
+        }
+      }
+      // ==========================================
+
+      // Check if screen is still active
+      if (!mounted) return;
+
+      // Complete the flow and move to the Home Screen!
+      widget.onOnboardingComplete();
+
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Auth Error: ${e.message ?? e.code}')),
+      );
+    } catch (e) {
+      print("🚨 HIDDEN ERROR: $e");
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sign in was cancelled or blocked by the browser.')),
+      );
+    }
   }
 
   @override
@@ -141,29 +215,55 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const SizedBox.shrink(),
 
                   // Next/Complete button
-                  ElevatedButton(
-                    onPressed: _currentPage == 0
-                        ? (_selectedLanguage != null ? _nextPage : null)
-                        : (_selectedSubjects.isNotEmpty ? _completeOnboarding : null),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: AppColors.neutral,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.paddingLarge,
-                        vertical: AppSpacing.paddingMedium,
+                  // Next/Complete button logic
+                  if (_currentPage == 0)
+                    ElevatedButton(
+                      onPressed: _selectedLanguage != null ? _nextPage : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.neutral,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.paddingLarge,
+                          vertical: AppSpacing.paddingMedium,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+                        ),
+                        disabledBackgroundColor: AppColors.borderMedium,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+                      child: Text(
+                        'Next',
+                        style: AppTypography.labelMedium.copyWith(
+                          color: AppColors.neutral,
+                        ),
                       ),
-                      disabledBackgroundColor: AppColors.borderMedium,
+                    )
+                  else
+                    ElevatedButton.icon(
+                      // Only enable the button if they picked at least one subject
+                      onPressed: _selectedSubjects.isNotEmpty ? _signInWithGoogle : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white, // Google button aesthetic
+                        foregroundColor: Colors.black87,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.paddingLarge,
+                          vertical: AppSpacing.paddingMedium,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+                        ),
+                        disabledBackgroundColor: Colors.grey.shade300,
+                      ),
+                      // We use a built-in icon here, but you can swap this for an Image.asset of the actual Google G logo later!
+                      icon: const Icon(Icons.g_mobiledata, size: 28, color: Colors.black87),
+                      label: Text(
+                        'Sign in with Google',
+                        style: AppTypography.labelMedium.copyWith(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                    child: Text(
-                      _currentPage == 0 ? 'Next' : 'Start My Journey',
-                      style: AppTypography.labelMedium.copyWith(
-                        color: AppColors.neutral,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
