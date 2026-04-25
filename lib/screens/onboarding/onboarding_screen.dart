@@ -1,3 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import '../../models/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:sikhay/constants/app_colors.dart';
 import 'package:sikhay/constants/app_spacing.dart';
@@ -25,6 +30,71 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     widget.onOnboardingComplete();
   }
 
+  /// Handle Google Sign-In (Cross-Platform) & Save to Database
+  Future<void> _signInWithGoogle() async {
+    try {
+      if (kIsWeb) {
+        // THE WEB SHORTCUT (Bypasses rendering errors)
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      } else {
+        // THE MOBILE FLOW (v7.2.0 Compliant)
+        final googleSignIn = GoogleSignIn.instance;
+        await googleSignIn.initialize(); 
+
+        final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
+        if (googleUser == null) return; // User closed the popup
+
+        final clientAuth = await googleUser.authorizationClient.authorizeScopes(['email', 'profile']);
+        final googleAuth = googleUser.authentication;
+
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: clientAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      }
+
+      // --- SAVE TO DATABASE ---
+      final User? currentUser = FirebaseAuth.instance.currentUser;
+      
+      if (currentUser != null) {
+        final userRef = FirebaseFirestore.instance.collection('users').doc(currentUser.uid);
+        final docSnapshot = await userRef.get();
+
+        // ONLY save if they don't exist yet (First time logging in!)
+        if (!docSnapshot.exists) {
+          final newUserProfile = UserProfile(
+            id: currentUser.uid,
+            displayName: currentUser.displayName ?? 'New Learner',
+            preferredLanguage: _selectedLanguage?.name ?? 'English',
+            xp: 0,
+            level: 1,
+            downloadedTopics: _selectedSubjects.toList(), 
+          );
+
+          await userRef.set(newUserProfile.toMap());
+        }
+      }
+
+      if (!mounted) return;
+      _completeOnboarding(); // Move to the App Shell!
+
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Auth Error: ${e.message ?? e.code}')),
+      );
+    } catch (e) {
+      print("🚨 HIDDEN ERROR: $e");
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sign in was cancelled or blocked by the browser.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: (_selectedLanguage != null && _selectedSubjects.isNotEmpty)
-                          ? _completeOnboarding
+                          ? _signInWithGoogle
                           : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
@@ -57,7 +127,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         disabledBackgroundColor: AppColors.borderMedium,
                       ),
                       child: Text(
-                        'Start My Journey',
+                        'Sign in with Google',
                         style: AppTypography.labelMedium.copyWith(color: AppColors.secondary),
                       ),
                     ),
