@@ -50,3 +50,5 @@ functions/.env
 
 # API Keys & Secrets (If you ever make a .env file)
 .env
+
+.flutter-plugins-dependencies
