@@ -16,7 +16,6 @@
 build/
 .pub-cache/
 .pub/
-/packages/app/lib/generated_plugin_registrant.dart
 
 # Android build files
 **/android/app/src/debug/AndroidManifest.xml
