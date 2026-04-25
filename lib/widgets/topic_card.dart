@@ -15,7 +15,7 @@ class TopicCard extends StatelessWidget {
   final String description;
 
   /// The number of lessons in this topic
-  final int lessonCount;
+  final String lessonCount;
 
   /// Optional status text (e.g., "New Content")
   final String? statusText;

@@ -1,3 +1,4 @@
+import 'package:sikhay/theme/app_locales.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
@@ -24,6 +25,8 @@ class VoyageCard extends StatelessWidget {
   /// Callback triggered when "View Map" button is pressed
   final VoidCallback onViewMapPressed;
 
+  final String lang;
+
   const VoyageCard({
     super.key,
     required this.title,
@@ -31,6 +34,7 @@ class VoyageCard extends StatelessWidget {
     required this.progressPercentage,
     required this.onResumePressed,
     required this.onViewMapPressed,
+    required this.lang,
   });
 
   @override
@@ -52,7 +56,7 @@ class VoyageCard extends StatelessWidget {
         children: [
           // Header section with label
           Text(
-            'CURRENT VOYAGE',
+            AppLocales.get(lang, 'current_voyage'),
             style: AppTypography.labelSmall.copyWith(
               color: AppColors.textTertiary,
               letterSpacing: 1.0,
@@ -122,7 +126,7 @@ class VoyageCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              'Mastery',
+                              AppLocales.get(lang, 'mastery'),
                               style: AppTypography.bodySmall.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -156,11 +160,16 @@ class VoyageCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Resume Study',
-                        style: AppTypography.labelMedium.copyWith(
-                          color: AppColors.secondary,
-                        ),
+                      // If progress is 0, say Explore. Otherwise, say Resume!
+                      progressPercentage == 0 
+                          ? AppLocales.get(lang, 'explore_lesson')
+                          : AppLocales.get(lang, 'resume_study'),
+                      
+                      // Keep your existing text styling here...
+                      style: AppTypography.labelMedium.copyWith(
+                        color: AppColors.secondary,
                       ),
+                    ),
                     ),
                     const SizedBox(height: AppSpacing.marginSmall),
 
@@ -181,7 +190,7 @@ class VoyageCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'View Map',
+                        AppLocales.get(lang, 'view_constellation'),
                         style: AppTypography.labelMedium.copyWith(
                           color: AppColors.textPrimary,
                         ),

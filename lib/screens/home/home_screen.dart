@@ -1,136 +1,128 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // <--- ADDED
 import 'package:sikhay/constants/app_colors.dart';
 import 'package:sikhay/constants/app_spacing.dart';
 import 'package:sikhay/constants/app_typography.dart';
 import 'package:sikhay/widgets/widgets.dart';
+import 'package:sikhay/providers/auth_provider.dart';   // <--- ADDED
+import 'package:sikhay/theme/app_locales.dart';         // <--- ADDED
 
-/// Home Dashboard screen displaying the main learning interface.
-/// 
-/// Shows:
-/// - Greeting message with user name
-/// - Current voyage/topic card with progress
-/// - Explore Topics section with topic cards
-/// 
-/// Uses a Column with SingleChildScrollView for scrollable content.
-/// Implements null-safe code with proper widget hierarchy.
-class HomeDashboardScreen extends StatelessWidget {
-  /// User's name for personalized greeting
-  final String userName;
-
-  /// Callback triggered when "Resume Study" is pressed
+class HomeDashboardScreen extends ConsumerWidget { // <--- CHANGED TO CONSUMER WIDGET
   final VoidCallback onResumePressed;
-
-  /// Callback triggered when "View Map" is pressed
   final VoidCallback onViewMapPressed;
 
   const HomeDashboardScreen({
     super.key,
-    required this.userName,
+    // Removed userName here, Riverpod handles it!
     required this.onResumePressed,
     required this.onViewMapPressed,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // Scaffold for basic Material app structure
-      backgroundColor: AppColors.background,
-      appBar: AppHeader(
-        title: 'Sikhay',
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the user profile from the database
+    final userProfileAsync = ref.watch(userProfileProvider);
+
+    return userProfileAsync.when(
+      loading: () => const Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
       ),
-      body: SingleChildScrollView(
-        // SingleChildScrollView for scrollable content
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.paddingLarge,
-          vertical: AppSpacing.paddingLarge,
-        ),
-        child: Column(
-          // Column for vertical arrangement of dashboard content
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Greeting section
-            _buildGreetingSection(),
-            const SizedBox(height: AppSpacing.marginLarge),
+      error: (error, stack) => Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(child: Text('Error: $error', style: TextStyle(color: Colors.white))),
+      ),
+      data: (user) {
+        // Extract language and name (with safe fallbacks)
+        final lang = user?.preferredLanguage ?? 'English';
+        final name = user?.displayName.split(' ').first ?? 'Learner';
 
-            // Current Voyage Card
-            VoyageCard(
-              title: 'Photosynthesis',
-              description: 'The process of light-to-energy conversion in botanical systems.',
-              progressPercentage: 60,
-              onResumePressed: onResumePressed,
-              onViewMapPressed: onViewMapPressed,
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppHeader(title: 'Sikhay'),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.paddingLarge,
+              vertical: AppSpacing.paddingLarge,
             ),
-            const SizedBox(height: AppSpacing.marginLarge),
-
-            // Explore Topics section header
-            Row(
-              // Row for side-by-side arrangement of title and link
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Explore Topics',
-                  style: AppTypography.headingMedium.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
+                _buildGreetingSection(name, lang), // Passed to the greeting
+                const SizedBox(height: AppSpacing.marginLarge),
+
+                VoyageCard(
+                  title: 'Nitrogen Cycle',
+                  description: AppLocales.get(lang, 'nitrogen_desc'),
+                  progressPercentage: 0, // This should come from the user's progress data
+                  onResumePressed: onResumePressed,
+                  onViewMapPressed: onViewMapPressed,
+                  lang: lang,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    // Navigate to explore topics
-                  },
-                  child: Text(
-                    '→',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.background,
+                const SizedBox(height: AppSpacing.marginLarge),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocales.get(lang, 'explore_topics'), // TRANSLATED!
+                      style: AppTypography.headingMedium.copyWith(color: AppColors.textPrimary),
                     ),
-                  ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        AppLocales.get(lang, 'see_all'), // TRANSLATED!
+                        style: AppTypography.bodySmall.copyWith(color: AppColors.primary),
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: AppSpacing.marginLarge),
+
+                _buildTopicCardsGrid(lang),
+                const SizedBox(height: AppSpacing.marginLarge),
               ],
             ),
-            const SizedBox(height: AppSpacing.marginLarge),
-
-            // Topic cards grid
-            _buildTopicCardsGrid(),
-            const SizedBox(height: AppSpacing.marginLarge),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  /// Build the greeting section with personalized message
-  Widget _buildGreetingSection() {
+  // Update the greeting section to accept the name and language strings
+  Widget _buildGreetingSection(String name, String lang) {
     return Column(
-      // Column for vertical arrangement of greeting elements
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // User info row with day counter and avatar
         Row(
-          // Row for horizontal arrangement of day counter and avatar
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Day counter with flame emoji
+            Row(
+              children: [
 
-            // User avatar placeholder
+                const SizedBox(width: AppSpacing.marginSmall),
+
+              ],
+            ),
             Container(
-              
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.surfaceLight),
+              child: const Icon(Icons.person, color: AppColors.textSecondary),
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.marginLarge),
 
-        // Greeting message
         RichText(
-          // RichText for mixed text styling
           text: TextSpan(
             children: [
               TextSpan(
-                text: 'Good morning,\n',
-                style: AppTypography.headingLarge.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+                text: '${AppLocales.get(lang, 'good_morning')},\n', // TRANSLATED!
+                style: AppTypography.headingLarge.copyWith(color: AppColors.textPrimary),
               ),
               TextSpan(
-                text: '$userName!',
+                text: '$name!', // DYNAMIC DATABASE NAME!
                 style: AppTypography.headingLarge.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
@@ -141,36 +133,28 @@ class HomeDashboardScreen extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.marginSmall),
 
-        // Subheading
         Text(
-          'Ready to explore the constellations of knowledge?',
-          style: AppTypography.bodySmall.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          AppLocales.get(lang, 'ready_explore'), // TRANSLATED!
+          style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
         ),
       ],
     );
   }
 
   /// Build the grid of topic cards
-  Widget _buildTopicCardsGrid() {
+  Widget _buildTopicCardsGrid(String lang) {
     return Column(
-      // Column for vertical arrangement of topic cards
       children: [
-        // First row of topic cards
         Row(
-          // Row for side-by-side arrangement of cards
           children: [
             Expanded(
               child: TopicCard(
-                title: 'Astrophysics',
-                description: 'Orbital Mechanics',
-                lessonCount: 12,
-                statusText: 'New Content',
+                title: 'English',
+                description: 'Passive and Active Voice',
+                lessonCount: '8 ${AppLocales.get(lang, 'lessons')}', 
+                statusText: AppLocales.get(lang, 'soon'),
                 backgroundColor: AppColors.surfaceLight,
-                onTap: () {
-                  // Navigate to topic
-                },
+                onTap: () {},
               ),
             ),
             const SizedBox(width: AppSpacing.marginMedium),
@@ -178,42 +162,36 @@ class HomeDashboardScreen extends StatelessWidget {
               child: TopicCard(
                 title: 'Chemistry',
                 description: 'Organic Chemistry',
-                lessonCount: 8,
+                lessonCount: '12 ${AppLocales.get(lang, 'lessons')}',
+                statusText: AppLocales.get(lang, 'soon'),
                 backgroundColor: AppColors.surfaceLight,
-                onTap: () {
-                  // Navigate to topic
-                },
+                onTap: () {},
               ),
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.marginMedium),
-
-        // Second row of topic cards (optional)
         Row(
-          // Row for side-by-side arrangement of cards
           children: [
             Expanded(
               child: TopicCard(
-                title: 'Biology',
-                description: 'Cell Biology',
-                lessonCount: 15,
+                title: 'Mathematics',
+                description: 'Algrebraic Expressions',
+                lessonCount: '10 ${AppLocales.get(lang, 'lessons')}',
+                statusText: AppLocales.get(lang, 'soon'),
                 backgroundColor: AppColors.surfaceLight,
-                onTap: () {
-                  // Navigate to topic
-                },
+                onTap: () {},
               ),
             ),
             const SizedBox(width: AppSpacing.marginMedium),
             Expanded(
               child: TopicCard(
                 title: 'Physics',
-                description: 'Quantum Mechanics',
-                lessonCount: 10,
+                description: 'Newton''s Law',
+                lessonCount: '15 ${AppLocales.get(lang, 'lessons')}',
+                statusText: AppLocales.get(lang, 'soon'),
                 backgroundColor: AppColors.surfaceLight,
-                onTap: () {
-                  // Navigate to topic
-                },
+                onTap: () {},
               ),
             ),
           ],
