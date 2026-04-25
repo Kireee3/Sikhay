@@ -29,7 +29,6 @@ class _AppShellState extends State<AppShell> {
     _screens = [
       // Home screen
       HomeDashboardScreen(
-        userName: 'Julian',
         onResumePressed: () {
           // Handle resume study action
           ScaffoldMessenger.of(context).showSnackBar(

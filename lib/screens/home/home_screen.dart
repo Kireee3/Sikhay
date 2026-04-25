@@ -1,3 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/auth_provider.dart'; 
+import '../../theme/app_locales.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_spacing.dart';
@@ -13,164 +16,127 @@ import '../../widgets/widgets.dart';
 /// 
 /// Uses a Column with SingleChildScrollView for scrollable content.
 /// Implements null-safe code with proper widget hierarchy.
-class HomeDashboardScreen extends StatelessWidget {
-  /// User's name for personalized greeting
-  final String userName;
-
-  /// Callback triggered when "Resume Study" is pressed
+class HomeDashboardScreen extends ConsumerWidget {
   final VoidCallback onResumePressed;
-
-  /// Callback triggered when "View Map" is pressed
   final VoidCallback onViewMapPressed;
 
   const HomeDashboardScreen({
     super.key,
-    required this.userName,
     required this.onResumePressed,
     required this.onViewMapPressed,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // Scaffold for basic Material app structure
-      backgroundColor: AppColors.background,
-      appBar: AppHeader(
-        title: 'Sikhay',
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 1. magically watch the user's profile from Firestore!
+    final userProfileAsync = ref.watch(userProfileProvider);
+
+    // 2. Handle the loading state beautifully using Riverpod's .when()
+    return userProfileAsync.when(
+      loading: () => const Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
       ),
-      body: SingleChildScrollView(
-        // SingleChildScrollView for scrollable content
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.paddingLarge,
-          vertical: AppSpacing.paddingLarge,
-        ),
-        child: Column(
-          // Column for vertical arrangement of dashboard content
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Greeting section
-            _buildGreetingSection(),
-            const SizedBox(height: AppSpacing.marginXLarge),
+      error: (error, stack) => Scaffold(
+        body: Center(child: Text('Error loading profile: $error')),
+      ),
+      data: (user) {
+        // 3. Extract the language and name from the database!
+        final lang = user?.preferredLanguage ?? 'en';
+        final name = user?.displayName.split(' ').first ?? 'Learner'; // Gets first name
 
-            // Current Voyage Card
-            VoyageCard(
-              title: 'Photosynthesis',
-              description: 'The process of light-to-energy conversion in botanical systems.',
-              progressPercentage: 60,
-              onResumePressed: onResumePressed,
-              onViewMapPressed: onViewMapPressed,
-            ),
-            const SizedBox(height: AppSpacing.marginXLarge),
-
-            // Explore Topics section header
-            Row(
-              // Row for side-by-side arrangement of title and link
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppHeader(title: 'Sikhay'),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.paddingLarge),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Explore Topics',
-                  style: AppTypography.headingMedium.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
+                _buildGreetingSection(name, lang), // Pass the variables down
+                const SizedBox(height: AppSpacing.marginXLarge),
+
+                VoyageCard(
+                  title: 'Photosynthesis',
+                  description: 'The process of light-to-energy conversion in botanical systems.',
+                  progressPercentage: 60,
+                  onResumePressed: onResumePressed,
+                  onViewMapPressed: onViewMapPressed,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    // Navigate to explore topics
-                  },
-                  child: Text(
-                    'See all categories →',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.primary,
+                const SizedBox(height: AppSpacing.marginXLarge),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocales.get(lang, 'explore_topics'), // TRANSLATED!
+                      style: AppTypography.headingMedium.copyWith(color: AppColors.textPrimary),
                     ),
-                  ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        AppLocales.get(lang, 'see_all'), // TRANSLATED!
+                        style: AppTypography.bodySmall.copyWith(color: AppColors.primary),
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: AppSpacing.marginLarge),
+
+                _buildTopicCardsGrid(),
+                const SizedBox(height: AppSpacing.marginLarge),
               ],
             ),
-            const SizedBox(height: AppSpacing.marginLarge),
-
-            // Topic cards grid
-            _buildTopicCardsGrid(),
-            const SizedBox(height: AppSpacing.marginLarge),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  /// Build the greeting section with personalized message
-  Widget _buildGreetingSection() {
+  // Pass name and lang into the greeting section
+  Widget _buildGreetingSection(String name, String lang) {
     return Column(
-      // Column for vertical arrangement of greeting elements
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // User info row with day counter and avatar
         Row(
-          // Row for horizontal arrangement of day counter and avatar
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Day counter with flame emoji
             Row(
               children: [
-                const Icon(
-                  Icons.local_fire_department,
-                  color: AppColors.secondary,
-                  size: AppSpacing.iconMedium,
-                ),
+                const Icon(Icons.local_fire_department, color: AppColors.secondary, size: AppSpacing.iconMedium),
                 const SizedBox(width: AppSpacing.marginSmall),
-                Text(
-                  'Day 7',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+                Text('Day 7', style: AppTypography.bodyMedium.copyWith(color: AppColors.textPrimary)),
               ],
             ),
-            // User avatar placeholder
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.surfaceLight,
-              ),
-              child: const Icon(
-                Icons.person,
-                color: AppColors.textSecondary,
-              ),
+              decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.surfaceLight),
+              child: const Icon(Icons.person, color: AppColors.textSecondary),
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.marginLarge),
 
-        // Greeting message
         RichText(
-          // RichText for mixed text styling
           text: TextSpan(
             children: [
               TextSpan(
-                text: 'Good morning,\n',
-                style: AppTypography.headingLarge.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+                text: '${AppLocales.get(lang, 'good_morning')},\n', // TRANSLATED!
+                style: AppTypography.headingLarge.copyWith(color: AppColors.textPrimary),
               ),
               TextSpan(
-                text: '$userName!',
-                style: AppTypography.headingLarge.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
+                text: '$name!', // DYNAMIC DB NAME!
+                style: AppTypography.headingLarge.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
               ),
             ],
           ),
         ),
         const SizedBox(height: AppSpacing.marginSmall),
 
-        // Subheading
         Text(
-          'Ready to explore the constellations of knowledge?',
-          style: AppTypography.bodySmall.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          AppLocales.get(lang, 'ready_explore'), // TRANSLATED!
+          style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
         ),
       ],
     );
