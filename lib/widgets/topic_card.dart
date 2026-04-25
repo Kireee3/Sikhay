@@ -1,68 +1,86 @@
+//topic_card.dart
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
 import '../constants/app_typography.dart';
+import '../theme/app_locales.dart';
 
-/// Reusable card widget for displaying topic cards in the Explore Topics section.
-/// 
-/// Shows topic title, description, lesson count, and status badge.
-/// Uses a Column layout with proper spacing and styling.
 class TopicCard extends StatelessWidget {
-  /// The title of the topic
   final String title;
-
-  /// The description of the topic
   final String description;
-
-  /// The number of lessons in this topic
   final int lessonCount;
-
-  /// Optional status text (e.g., "New Content")
+  final double progressPercentage;
   final String? statusText;
-
-  /// Optional background color for the card
-  final Color? backgroundColor;
-
-  /// Callback triggered when the card is tapped
-  final VoidCallback? onTap;
+  final Color backgroundColor;
+  final VoidCallback onTap;
+  final String lang;
 
   const TopicCard({
     super.key,
     required this.title,
     required this.description,
     required this.lessonCount,
+    this.progressPercentage = 0.0,
     this.statusText,
-    this.backgroundColor,
-    this.onTap,
+    this.backgroundColor = AppColors.surfaceLight,
+    required this.onTap,
+    this.lang = 'English',
   });
 
   @override
   Widget build(BuildContext context) {
+    final String buttonText = progressPercentage > 0
+        ? AppLocales.get(lang, 'resume_exploration')
+        : AppLocales.get(lang, 'explore_lesson');
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        // Container with border and background styling
+        padding: const EdgeInsets.all(AppSpacing.paddingMedium),
         decoration: BoxDecoration(
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
           border: Border.all(
             color: AppColors.borderMedium,
-            width: 1.5,
+            width: 1.0,
           ),
-          color: backgroundColor ?? AppColors.surfaceLight,
         ),
-        padding: const EdgeInsets.all(AppSpacing.paddingLarge),
         child: Column(
-          // Column for vertical arrangement of card content
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Status badge (optional)
+            if (statusText != null) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.paddingSmall,
+                  vertical: 4.0,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+                ),
+                child: Text(
+                  statusText!,
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.marginSmall),
+            ],
+
             // Title
             Text(
               title,
               style: AppTypography.headingSmall.copyWith(
                 color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: AppSpacing.marginSmall),
+            const SizedBox(height: 4.0),
 
             // Description
             Text(
@@ -75,39 +93,58 @@ class TopicCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.marginMedium),
 
-            // Footer with lesson count and status
-            Row(
-              // Row layout for horizontal arrangement of lesson count and status
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Progress Bar
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Lesson count
-                Text(
-                  '$lessonCount Lessons',
-                  style: AppTypography.caption.copyWith(
-                    color: AppColors.textTertiary,
-                  ),
-                ),
-
-                // Status badge (if provided)
-                if (statusText != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.paddingSmall,
-                      vertical: AppSpacing.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
-                      color: AppColors.primary.withValues(alpha: 0.2),
-                    ),
-                    child: Text(
-                      statusText!,
-                      style: AppTypography.captionSmall.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${progressPercentage.toInt()}% Complete',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: AppColors.textTertiary,
                       ),
                     ),
-                  ),
+                    Text(
+                      '$lessonCount Lessons',
+                      style: AppTypography.labelSmall.copyWith(
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8.0),
+                LinearProgressIndicator(
+                  value: progressPercentage / 100,
+                  backgroundColor: AppColors.surfaceDark,
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  minHeight: 6.0,
+                  borderRadius: BorderRadius.circular(3.0),
+                ),
               ],
+            ),
+            const SizedBox(height: AppSpacing.marginMedium),
+
+            // Action Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: onTap,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  foregroundColor: AppColors.primary,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                ),
+                child: Text(
+                  buttonText,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
           ],
         ),

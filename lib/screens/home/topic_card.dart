@@ -1,13 +1,10 @@
 //topic_card.dart
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
-import '../../constants/app_spacing.dart';
-import '../../constants/app_typography.dart';
+import '../constants/app_colors.dart';
+import '../constants/app_spacing.dart';
+import '../constants/app_typography.dart';
+import '../theme/app_locales.dart';
 
-/// A card widget displaying a topic in the Explore Topics section.
-/// 
-/// Shows the topic title, description, lesson count, and progress.
-/// The button text changes based on the progress percentage.
 class TopicCard extends StatelessWidget {
   final String title;
   final String description;
@@ -16,6 +13,7 @@ class TopicCard extends StatelessWidget {
   final String? statusText;
   final Color backgroundColor;
   final VoidCallback onTap;
+  final String lang;
 
   const TopicCard({
     super.key,
@@ -26,12 +24,14 @@ class TopicCard extends StatelessWidget {
     this.statusText,
     this.backgroundColor = AppColors.surfaceLight,
     required this.onTap,
+    this.lang = 'English',
   });
 
   @override
   Widget build(BuildContext context) {
-    // Determine button text based on progress
-    final String buttonText = progressPercentage > 0 ? 'Resume Exploration' : 'Explore Lesson';
+    final String buttonText = progressPercentage > 0
+        ? AppLocales.get(lang, 'resume_exploration')
+        : AppLocales.get(lang, 'explore_lesson');
 
     return GestureDetector(
       onTap: onTap,

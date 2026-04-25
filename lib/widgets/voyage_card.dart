@@ -2,27 +2,15 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
 import '../constants/app_typography.dart';
+import '../theme/app_locales.dart'; // ADD THIS
 
-/// Reusable card widget for displaying the current learning voyage.
-/// 
-/// Shows the topic title, description, progress percentage with circular indicator,
-/// and action buttons (Resume Study, View Map).
-/// Uses a Column layout with nested Row for proper widget hierarchy.
 class VoyageCard extends StatelessWidget {
-  /// The title of the current voyage/topic
   final String title;
-
-  /// The description of the current voyage/topic
   final String description;
-
-  /// The progress percentage (0-100)
   final int progressPercentage;
-
-  /// Callback triggered when "Resume Study" button is pressed
   final VoidCallback onResumePressed;
-
-  /// Callback triggered when "View Map" button is pressed
   final VoidCallback onViewMapPressed;
+  final String lang; // ADD THIS
 
   const VoyageCard({
     super.key,
@@ -31,18 +19,15 @@ class VoyageCard extends StatelessWidget {
     required this.progressPercentage,
     required this.onResumePressed,
     required this.onViewMapPressed,
+    this.lang = 'English', // ADD THIS
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      // Container with border and background styling
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        border: Border.all(
-          color: AppColors.borderMedium,
-          width: 1.5,
-        ),
+        border: Border.all(color: AppColors.borderMedium, width: 1.5),
         color: AppColors.surfaceLight,
       ),
       padding: const EdgeInsets.all(AppSpacing.paddingLarge),
@@ -52,7 +37,7 @@ class VoyageCard extends StatelessWidget {
         children: [
           // Header section with label
           Text(
-            'CURRENT VOYAGE',
+            AppLocales.get(lang, 'current_voyage'), // TRANSLATED
             style: AppTypography.labelSmall.copyWith(
               color: AppColors.textTertiary,
               letterSpacing: 1.0,
@@ -122,7 +107,7 @@ class VoyageCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              'Mastery',
+                              AppLocales.get(lang, 'mastery'), // TRANSLATED
                               style: AppTypography.bodySmall.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -142,7 +127,7 @@ class VoyageCard extends StatelessWidget {
                   // Column for vertical arrangement of buttons
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Resume Study button
+                    // Explore/Resume button
                     ElevatedButton(
                       onPressed: onResumePressed,
                       style: ElevatedButton.styleFrom(
@@ -156,7 +141,9 @@ class VoyageCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        progressPercentage == 0 ? 'Explore the Lesson' : 'Resume Study',
+                        progressPercentage == 0
+                            ? AppLocales.get(lang, 'explore_lesson') // TRANSLATED
+                            : AppLocales.get(lang, 'resume_study'),  // TRANSLATED
                         style: AppTypography.labelMedium.copyWith(
                           color: AppColors.neutral,
                         ),
@@ -181,7 +168,7 @@ class VoyageCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'View Map',
+                        AppLocales.get(lang, 'view_map'), // TRANSLATED
                         style: AppTypography.labelMedium.copyWith(
                           color: AppColors.textPrimary,
                         ),
@@ -217,7 +204,6 @@ class CircularProgressPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 5;
 
-    // Draw progress arc
     final paint = Paint()
       ..color = color
       ..strokeWidth = 4
