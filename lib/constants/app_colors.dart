@@ -49,3 +49,4 @@ class AppColors {
   static const Color borderMedium = Color(0xFF3A5573);
   static const Color borderDark = Color(0xFF1A2F47);
 }
+//bagong lagay
