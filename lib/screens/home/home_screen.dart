@@ -1,8 +1,10 @@
+//home_screen.dart
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_spacing.dart';
 import '../../constants/app_typography.dart';
 import '../../widgets/widgets.dart';
+
 
 /// Home Dashboard screen displaying the main learning interface.
 /// 
@@ -54,9 +56,9 @@ class HomeDashboardScreen extends StatelessWidget {
 
             // Current Voyage Card
             VoyageCard(
-              title: 'Photosynthesis',
-              description: 'The process of light-to-energy conversion in botanical systems.',
-              progressPercentage: 60,
+              title: 'Nitrogen Cycle',
+              description: 'The continuous environmental process involving five stages through which nitrogen is circulated.',
+              progressPercentage: 0, // Default to 0%
               onResumePressed: onResumePressed,
               onViewMapPressed: onViewMapPressed,
             ),
@@ -118,7 +120,7 @@ class HomeDashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.marginSmall),
                 Text(
-                  'Day 7',
+                  'Day 1',
                   style: AppTypography.bodyMedium.copyWith(
                     color: AppColors.textPrimary,
                   ),
@@ -187,10 +189,11 @@ class HomeDashboardScreen extends StatelessWidget {
           children: [
             Expanded(
               child: TopicCard(
-                title: 'Astrophysics',
-                description: 'Orbital Mechanics',
-                lessonCount: 12,
-                statusText: 'New Content',
+                title: 'Geology',
+                description: 'Coming Soon',
+                lessonCount: 0,
+        
+                statusText: 'Soon',
                 backgroundColor: AppColors.surfaceLight,
                 onTap: () {
                   // Navigate to topic
@@ -200,12 +203,14 @@ class HomeDashboardScreen extends StatelessWidget {
             const SizedBox(width: AppSpacing.marginMedium),
             Expanded(
               child: TopicCard(
-                title: 'Chemistry',
-                description: 'Organic Chemistry',
-                lessonCount: 8,
+                title: 'Photosynthesis',
+                description: 'Coming Soon',
+                lessonCount: 0,
+          
+                statusText: 'Soon',
                 backgroundColor: AppColors.surfaceLight,
                 onTap: () {
-                  // Navigate to topic
+                  // Do nothing, coming soon
                 },
               ),
             ),
@@ -219,24 +224,28 @@ class HomeDashboardScreen extends StatelessWidget {
           children: [
             Expanded(
               child: TopicCard(
-                title: 'Biology',
-                description: 'Cell Biology',
-                lessonCount: 15,
+                title: 'Cell Biology',
+                description: 'Coming Soon',
+                lessonCount: 0,
+           
+                statusText: 'Soon',
                 backgroundColor: AppColors.surfaceLight,
                 onTap: () {
-                  // Navigate to topic
+                  // Do nothing, coming soon
                 },
               ),
             ),
             const SizedBox(width: AppSpacing.marginMedium),
             Expanded(
               child: TopicCard(
-                title: 'Physics',
-                description: 'Quantum Mechanics',
-                lessonCount: 10,
+                title: 'Quantum Mechanics',
+                description: 'Coming Soon',
+                lessonCount: 0,
+  
+                statusText: 'Soon',
                 backgroundColor: AppColors.surfaceLight,
                 onTap: () {
-                  // Navigate to topic
+                  // Do nothing, coming soon
                 },
               ),
             ),

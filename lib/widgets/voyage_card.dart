@@ -156,7 +156,7 @@ class VoyageCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Resume Study',
+                        progressPercentage == 0 ? 'Explore the Lesson' : 'Resume Study',
                         style: AppTypography.labelMedium.copyWith(
                           color: AppColors.neutral,
                         ),
