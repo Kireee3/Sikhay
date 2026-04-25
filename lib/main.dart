@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart'; // <--- ADDED FIREBASE IMPORT
@@ -32,7 +33,7 @@ void main() async {
   ]);
 
   // 5. Finally, start the app
-  runApp(const SikhayApp());
+  runApp(const ProviderScope(child: SikhayApp()));
 }
 /// Root widget of the Sikhay app.
 /// 
