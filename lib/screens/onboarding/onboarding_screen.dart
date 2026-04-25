@@ -134,7 +134,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   const SizedBox(height: AppSpacing.marginSmall),
                   Text(
-                    'No subscription required to explore the map.',
+                    'By signing in, you agree to our Terms of Service and Privacy Policy.',
                     style: AppTypography.bodySmall.copyWith(color: AppColors.textTertiary),
                   ),
                 ],

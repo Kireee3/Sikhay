@@ -37,26 +37,22 @@ class _AppShellState extends State<AppShell> {
   }
 
   /// Initialize screens list
-  void _initializeScreens() {
+void _initializeScreens() {
     _screens = [
       // Home screen
       HomeDashboardScreen(
         onResumePressed: () {
-          // Handle resume study action
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Resume Study tapped')),
           );
         },
         onViewMapPressed: () {
-          // Handle view map action
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('View Map tapped')),
           );
         },
       ),
-      // Explore screen
-      const ExploreScreen(),
-      // Constellation screen with Photosynthesis as initial node
+      // Constellation screen (Explore screen was removed from here!)
       constellation.ConstellationScreen(
         initialNode: ConceptNode.photosynthesis(),
         onOpenLesson: _handleOpenLesson,
@@ -165,24 +161,6 @@ class _AppShellState extends State<AppShell> {
               child: const Icon(Icons.home),
             ),
             label: 'Home',
-          ),
-
-          // Explore navigation item
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.explore_outlined),
-            activeIcon: Container(
-              // Active state with background
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.paddingLarge,
-                vertical: AppSpacing.paddingSmall,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
-              ),
-              child: const Icon(Icons.explore),
-            ),
-            label: 'Explore',
           ),
 
           // Constellation navigation item - highlighted when selected
