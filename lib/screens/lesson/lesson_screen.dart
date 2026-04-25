@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_spacing.dart';
-import '../constants/app_typography.dart';
-import '../models/concept.dart';
-import '../models/lesson_content.dart';
-import '../widgets/lesson_header.dart';
-import '../widgets/lesson_card.dart';
-import '../widgets/comprehension_check.dart';
-import 'lesson/contextual_based.dart';
+import 'package:sikhay/constants/app_colors.dart';
+import 'package:sikhay/constants/app_spacing.dart';
+import 'package:sikhay/constants/app_typography.dart';
+import 'package:sikhay/models/concept.dart';
+import 'package:sikhay/models/lesson_content.dart';
+import 'package:sikhay/widgets/lesson_header.dart';
+import 'package:sikhay/widgets/lesson_card.dart';
+import 'package:sikhay/widgets/comprehension_check.dart';
+import 'package:sikhay/screens/lesson/contextual_based.dart';
 
 /// Lesson View screen displaying dynamic lesson content with comprehension check.
 /// 
@@ -33,11 +33,11 @@ class LessonScreen extends StatefulWidget {
   final Function(String)? onLanguageChanged;
 
   const LessonScreen({
-    Key? key,
+    super.key,
     required this.conceptNode,
     this.onBackPressed,
     this.onLanguageChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<LessonScreen> createState() => _LessonScreenState();
@@ -167,7 +167,7 @@ class _LessonScreenState extends State<LessonScreen> {
               // Contextual content widget
               contextualContent: contextualContent,
             ),
-            const SizedBox(height: AppSpacing.marginXLarge),
+            const SizedBox(height: AppSpacing.marginLarge),
 
             // ── Comprehension Check ────────────────────────────────────────
             ComprehensionCheck(

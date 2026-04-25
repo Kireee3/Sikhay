@@ -33,13 +33,13 @@ class NodeWidget extends StatefulWidget {
   final Color? color;
 
   const NodeWidget({
-    Key? key,
+    super.key,
     required this.label,
     required this.size,
     required this.onTap,
     this.isCenter = false,
     this.color,
-  }) : super(key: key);
+  });
 
   @override
   State<NodeWidget> createState() => _NodeWidgetState();
@@ -109,11 +109,11 @@ class _NodeWidgetState extends State<NodeWidget>
               width: widget.isCenter ? 2.5 : 2.0,
             ),
             // Semi-transparent background
-            color: (widget.color ?? AppColors.primary).withOpacity(0.1),
+            color: (widget.color ?? AppColors.primary).withValues(alpha: 0.1),
             // Optional shadow for depth
             boxShadow: [
               BoxShadow(
-                color: (widget.color ?? AppColors.primary).withOpacity(0.2),
+                color: (widget.color ?? AppColors.primary).withValues(alpha: 0.2),
                 blurRadius: 12,
                 spreadRadius: 2,
               ),

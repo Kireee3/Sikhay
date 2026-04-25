@@ -1,7 +1,7 @@
 // Barrel file for exporting all screens
-export 'onboarding_screen.dart';
-export 'home_dashboard_screen.dart';
-export 'placeholder_screens.dart';
-export 'app_shell.dart';
-export 'lesson_screen.dart';
+export 'package:sikhay/screens/onboarding/onboarding_screen.dart';
+export 'package:sikhay/screens/home/home_screen.dart';
+export 'package:sikhay/screens/placeholder/placeholder_screen.dart';
+export 'package:sikhay/screens/appshell/app_shell.dart';
+export 'package:sikhay/screens/lesson/lesson_screen.dart';
 //bagong lagay

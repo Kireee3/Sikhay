@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_spacing.dart';
-import '../constants/app_typography.dart';
-import '../models/onboarding_models.dart';
-import '../widgets/widgets.dart';
+import 'package:sikhay/constants/app_colors.dart';
+import 'package:sikhay/constants/app_spacing.dart';
+import 'package:sikhay/constants/app_typography.dart';
+import 'package:sikhay/models/onboarding_model.dart';
+import 'package:sikhay/widgets/widgets.dart';
 
 /// Onboarding screen with PageView for multi-step onboarding flow.
 /// 
@@ -17,9 +17,9 @@ class OnboardingScreen extends StatefulWidget {
   final VoidCallback onOnboardingComplete;
 
   const OnboardingScreen({
-    Key? key,
+    super.key,
     required this.onOnboardingComplete,
-  }) : super(key: key);
+  });
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -307,14 +307,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               );
             }).toList(),
           ),
-          const SizedBox(height: AppSpacing.marginXLarge),
+          const SizedBox(height: AppSpacing.marginLarge),
 
           // Info text
           Text(
             'No subscription required to explore the map.',
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textTertiary,
-              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -322,4 +321,3 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 }
-//bagong lagay

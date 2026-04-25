@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_spacing.dart';
-import '../constants/app_typography.dart';
-import '../widgets/widgets.dart';
+import 'package:sikhay/constants/app_colors.dart';
+import 'package:sikhay/constants/app_spacing.dart';
+import 'package:sikhay/constants/app_typography.dart';
+import 'package:sikhay/widgets/widgets.dart';
 
 /// Home Dashboard screen displaying the main learning interface.
 /// 
@@ -24,11 +24,11 @@ class HomeDashboardScreen extends StatelessWidget {
   final VoidCallback onViewMapPressed;
 
   const HomeDashboardScreen({
-    Key? key,
+    super.key,
     required this.userName,
     required this.onResumePressed,
     required this.onViewMapPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class HomeDashboardScreen extends StatelessWidget {
           children: [
             // Greeting section
             _buildGreetingSection(),
-            const SizedBox(height: AppSpacing.marginXLarge),
+            const SizedBox(height: AppSpacing.marginLarge),
 
             // Current Voyage Card
             VoyageCard(
@@ -60,7 +60,7 @@ class HomeDashboardScreen extends StatelessWidget {
               onResumePressed: onResumePressed,
               onViewMapPressed: onViewMapPressed,
             ),
-            const SizedBox(height: AppSpacing.marginXLarge),
+            const SizedBox(height: AppSpacing.marginLarge),
 
             // Explore Topics section header
             Row(

@@ -38,7 +38,7 @@ class LessonCard extends StatefulWidget {
   final Widget? contextualContent;
 
   const LessonCard({
-    Key? key,
+    super.key,
     required this.subject,
     required this.level,
     required this.title,
@@ -46,7 +46,7 @@ class LessonCard extends StatefulWidget {
     this.hasAudio = true,
     this.onAudioPressed,
     this.contextualContent,
-  }) : super(key: key);
+  });
 
   @override
   State<LessonCard> createState() => _LessonCardState();
@@ -104,7 +104,7 @@ class _LessonCardState extends State<LessonCard> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-                  color: AppColors.primary.withOpacity(0.2),
+                  color: AppColors.primary.withValues(alpha: 0.2),
                 ),
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.paddingMedium,
@@ -175,7 +175,7 @@ class _LessonCardState extends State<LessonCard> {
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppColors.primary.withValues(alpha: 0.2),
                     ),
                     padding: const EdgeInsets.all(AppSpacing.paddingSmall),
                     child: const Icon(
@@ -188,7 +188,7 @@ class _LessonCardState extends State<LessonCard> {
               ),
           ],
         ),
-        const SizedBox(height: AppSpacing.marginXLarge),
+        const SizedBox(height: AppSpacing.marginLarge),
 
         // Visual Diagram (Process Flow)
         _buildProcessDiagram(),
@@ -225,7 +225,7 @@ class _LessonCardState extends State<LessonCard> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
                   color: _contentType == 'textual'
-                      ? AppColors.primary
+                      ? AppColors.primary.withValues(alpha: 0.2)
                       : Colors.transparent,
                 ),
                 padding: const EdgeInsets.symmetric(

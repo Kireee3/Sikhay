@@ -18,10 +18,10 @@ class ContentToggle extends StatelessWidget {
   final Function(String) onContentTypeChanged;
 
   const ContentToggle({
-    Key? key,
+    super.key,
     required this.selectedContentType,
     required this.onContentTypeChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

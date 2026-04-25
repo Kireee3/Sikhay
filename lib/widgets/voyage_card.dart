@@ -25,13 +25,13 @@ class VoyageCard extends StatelessWidget {
   final VoidCallback onViewMapPressed;
 
   const VoyageCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.progressPercentage,
     required this.onResumePressed,
     required this.onViewMapPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

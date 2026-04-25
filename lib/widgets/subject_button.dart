@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
 import '../constants/app_typography.dart';
-import '../models/onboarding_models.dart';
+import '../models/onboarding_model.dart';
 
 /// Reusable button widget for subject selection in onboarding.
 /// 
@@ -20,11 +20,11 @@ class SubjectButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const SubjectButton({
-    Key? key,
+    super.key,
     required this.subject,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class SubjectButton extends StatelessWidget {
             width: isSelected ? 2.0 : 1.5,
           ),
           // Primary color background when selected, dark surface when not
-          color: isSelected ? AppColors.primary.withOpacity(0.15) : AppColors.surfaceLight,
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : AppColors.surfaceLight,
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.paddingMedium,

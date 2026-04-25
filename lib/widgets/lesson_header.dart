@@ -19,10 +19,10 @@ class LessonHeader extends StatefulWidget implements PreferredSizeWidget {
   final Function(String) onLanguageChanged;
 
   const LessonHeader({
-    Key? key,
+    super.key,
     required this.selectedLanguage,
     required this.onLanguageChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<LessonHeader> createState() => _LessonHeaderState();

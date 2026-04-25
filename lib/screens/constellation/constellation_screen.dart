@@ -30,11 +30,11 @@ class ConstellationScreen extends StatefulWidget {
   final Function(ConceptNode)? onOpenLesson;
 
   const ConstellationScreen({
-    Key? key,
+    super.key,
     required this.initialNode,
     this.onBackPressed,
     this.onOpenLesson,
-  }) : super(key: key);
+  });
 
   @override
   State<ConstellationScreen> createState() => _ConstellationScreenState();

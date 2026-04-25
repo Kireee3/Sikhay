@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_spacing.dart';
-import '../constants/app_typography.dart';
-import '../widgets/widgets.dart';
+import 'package:sikhay/constants/app_colors.dart';
+import 'package:sikhay/constants/app_spacing.dart';
+import 'package:sikhay/constants/app_typography.dart';
+import 'package:sikhay/widgets/widgets.dart';
 
 /// Explore screen - placeholder for exploring topics and categories.
 /// 
 /// This is a placeholder screen that can be extended with more functionality.
 class ExploreScreen extends StatelessWidget {
-  const ExploreScreen({Key? key}) : super(key: key);
+  const ExploreScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class ExploreScreen extends StatelessWidget {
 /// 
 /// This is a placeholder screen that can be extended with more functionality.
 class ConstellationScreen extends StatelessWidget {
-  const ConstellationScreen({Key? key}) : super(key: key);
+  const ConstellationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class ConstellationScreen extends StatelessWidget {
 /// 
 /// This is a placeholder screen that can be extended with more functionality.
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -138,4 +138,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-//bagong lagay

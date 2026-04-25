@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
 import '../constants/app_typography.dart';
-import '../models/onboarding_models.dart';
+import '../models/onboarding_model.dart';
 
 /// Reusable card widget for language selection in onboarding.
 /// 
@@ -20,11 +20,11 @@ class LanguageCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const LanguageCard({
-    Key? key,
+    super.key,
     required this.language,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

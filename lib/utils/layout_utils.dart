@@ -87,12 +87,12 @@ bool isPointInCircle(
 /// - [curve]: Animation curve to apply (default: linear)
 /// 
 /// Returns: Interpolated offset at the given progress
-Offset offsetLerpWithCurve(
-  Offset begin,
-  Offset end,
-  double progress,
-  Curve curve = Curves.linear,
-) {
+  Offset offsetLerpWithCurve({
+    required Offset begin,
+    required Offset end,
+    required double progress,
+    Curve curve = Curves.linear, // Now this default value is allowed!
+  }) {
   // Apply curve to progress value
   final curvedProgress = curve.transform(progress);
   

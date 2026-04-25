@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_spacing.dart';
-import '../constants/app_typography.dart';
-import '../models/concept.dart';
-import 'home_dashboard_screen.dart';
-import 'placeholder_screens.dart';
-import 'constellation/constellation_screen.dart';
-import 'lesson_screen.dart';
+import 'package:sikhay/constants/app_colors.dart';
+import 'package:sikhay/constants/app_spacing.dart';
+import 'package:sikhay/constants/app_typography.dart';
+import 'package:sikhay/models/concept.dart';
+import '../home/home_screen.dart';
+import '../placeholder/placeholder_screen.dart';
+import '../constellation/constellation_screen.dart' as constellation;
+import '../lesson/lesson_screen.dart';
 
 /// Main app shell with BottomNavigationBar for navigation between screens.
 /// 
@@ -14,7 +14,7 @@ import 'lesson_screen.dart';
 /// the selected navigation item. Handles navigation between Constellation and
 /// Lesson screens. Implements null-safe code with proper state management.
 class AppShell extends StatefulWidget {
-  const AppShell({Key? key}) : super(key: key);
+  const AppShell({super.key});
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -58,7 +58,7 @@ class _AppShellState extends State<AppShell> {
       // Explore screen
       const ExploreScreen(),
       // Constellation screen with Photosynthesis as initial node
-      ConstellationScreen(
+      constellation.ConstellationScreen(
         initialNode: ConceptNode.photosynthesis(),
         onOpenLesson: _handleOpenLesson,
       ),
@@ -160,7 +160,7 @@ class _AppShellState extends State<AppShell> {
                 vertical: AppSpacing.paddingSmall,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
               ),
               child: const Icon(Icons.home),
@@ -178,7 +178,7 @@ class _AppShellState extends State<AppShell> {
                 vertical: AppSpacing.paddingSmall,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
               ),
               child: const Icon(Icons.explore),
@@ -196,7 +196,7 @@ class _AppShellState extends State<AppShell> {
                 vertical: AppSpacing.paddingSmall,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
               ),
               child: const Icon(Icons.auto_awesome),
@@ -214,7 +214,7 @@ class _AppShellState extends State<AppShell> {
                 vertical: AppSpacing.paddingSmall,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
               ),
               child: const Icon(Icons.person),
@@ -226,4 +226,3 @@ class _AppShellState extends State<AppShell> {
     );
   }
 }
-//bagong lagay

@@ -21,12 +21,12 @@ class ContextualBased extends StatelessWidget {
   final List<String> applications;
 
   const ContextualBased({
-    Key? key,
+    super.key,
     required this.title,
     required this.contextExplanation,
     required this.examples,
     required this.applications,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

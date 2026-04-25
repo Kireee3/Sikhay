@@ -19,10 +19,10 @@ class ComprehensionCheck extends StatefulWidget {
   final String? selectedReaction;
 
   const ComprehensionCheck({
-    Key? key,
+    super.key,
     required this.onReactionSelected,
     this.selectedReaction,
-  }) : super(key: key);
+  });
 
   @override
   State<ComprehensionCheck> createState() => _ComprehensionCheckState();
@@ -95,7 +95,7 @@ class _ComprehensionCheckState extends State<ComprehensionCheck> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: isSelected
-                            ? AppColors.primary.withOpacity(0.2)
+                            ? AppColors.primary.withValues(alpha: 0.2)
                             : AppColors.background,
                         border: Border.all(
                           color: isSelected

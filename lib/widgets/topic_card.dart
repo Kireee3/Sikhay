@@ -27,14 +27,14 @@ class TopicCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const TopicCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.lessonCount,
     this.statusText,
     this.backgroundColor,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +97,7 @@ class TopicCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppColors.primary.withValues(alpha: 0.2),
                     ),
                     child: Text(
                       statusText!,
