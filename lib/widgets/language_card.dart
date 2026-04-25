@@ -20,11 +20,11 @@ class LanguageCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const LanguageCard({
-    Key? key,
+    super.key,
     required this.language,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -16,9 +16,9 @@ class OnboardingScreen extends StatefulWidget {
   final VoidCallback onOnboardingComplete;
 
   const OnboardingScreen({
-    Key? key,
+    super.key,
     required this.onOnboardingComplete,
-  }) : super(key: key);
+  });
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();

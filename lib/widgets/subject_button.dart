@@ -20,11 +20,11 @@ class SubjectButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const SubjectButton({
-    Key? key,
+    super.key,
     required this.subject,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class SubjectButton extends StatelessWidget {
             width: isSelected ? 2.0 : 1.5,
           ),
           // Primary color background when selected, dark surface when not
-          color: isSelected ? AppColors.primary.withOpacity(0.15) : AppColors.surfaceLight,
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : AppColors.surfaceLight,
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.paddingMedium,

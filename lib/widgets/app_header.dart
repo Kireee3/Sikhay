@@ -21,11 +21,11 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
 
   const AppHeader({
-    Key? key,
+    super.key,
     this.onBackPressed,
     this.title,
     this.showBackButton = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'theme/app_theme.dart';
 import 'screens/screens.dart';
-
+import 'package:sikhay/theme/app_theme.dart';
 
 /// Main entry point of the Sikhay app.
 /// 
@@ -11,8 +10,11 @@ import 'screens/screens.dart';
 /// - System UI overlay style
 /// - Onboarding flow
 /// - Navigation shell
-void main() {
-  // Configure system UI overlay style
+void main() async {
+  // 1. MUST BE FIRST: Initialize the connection between Flutter and the host platform
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 2. Configure system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Color(0xFF0D1B2A),
@@ -22,21 +24,21 @@ void main() {
     ),
   );
 
-  // Set preferred device orientations
-  SystemChrome.setPreferredOrientations([
+  // 3. Set preferred device orientations and wait for it to complete
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) {
-    runApp(const SikhayApp());
-  });
-}
+  ]);
 
+  // 4. Finally, start the app
+  runApp(const SikhayApp());
+}
 /// Root widget of the Sikhay app.
 /// 
 /// Provides the Material app configuration and theme.
 /// Manages the navigation between onboarding and main app.
 class SikhayApp extends StatefulWidget {
-  const SikhayApp({Key? key}) : super(key: key);
+  const SikhayApp({super.key});
 
   @override
   State<SikhayApp> createState() => _SikhayAppState();

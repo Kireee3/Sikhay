@@ -8,7 +8,7 @@ import '../widgets/widgets.dart';
 /// 
 /// This is a placeholder screen that can be extended with more functionality.
 class ExploreScreen extends StatelessWidget {
-  const ExploreScreen({Key? key}) : super(key: key);
+  const ExploreScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class ExploreScreen extends StatelessWidget {
 /// 
 /// This is a placeholder screen that can be extended with more functionality.
 class ConstellationScreen extends StatelessWidget {
-  const ConstellationScreen({Key? key}) : super(key: key);
+  const ConstellationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class ConstellationScreen extends StatelessWidget {
 /// 
 /// This is a placeholder screen that can be extended with more functionality.
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

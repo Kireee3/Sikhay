@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_spacing.dart';
 import '../../constants/app_typography.dart';
-import 'home_screen.dart';
 import '../placeholder_screens.dart';
+import './home_screen.dart';
 
 /// Main app shell with BottomNavigationBar for navigation between screens.
 /// 
 /// Manages the navigation state and displays the appropriate screen based on
 /// the selected navigation item. Implements null-safe code with proper state management.
 class AppShell extends StatefulWidget {
-  const AppShell({Key? key}) : super(key: key);
+  const AppShell({super.key});
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -112,7 +112,7 @@ class _AppShellState extends State<AppShell> {
                 vertical: AppSpacing.paddingSmall,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
               ),
               child: const Icon(Icons.home),
@@ -130,7 +130,7 @@ class _AppShellState extends State<AppShell> {
                 vertical: AppSpacing.paddingSmall,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
               ),
               child: const Icon(Icons.explore),
@@ -148,7 +148,7 @@ class _AppShellState extends State<AppShell> {
                 vertical: AppSpacing.paddingSmall,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
               ),
               child: const Icon(Icons.auto_awesome),
@@ -166,7 +166,7 @@ class _AppShellState extends State<AppShell> {
                 vertical: AppSpacing.paddingSmall,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
+                color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
               ),
               child: const Icon(Icons.person),
