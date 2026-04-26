@@ -151,16 +151,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       padding: const EdgeInsets.all(AppSpacing.paddingLarge),
       child: Column(
         children: [
-          Image.asset(
-            '../assets/images/sikhay-logo.png',
-            width: 64,
-            height: 64,
-            fit: BoxFit.contain,
-          ),
-
           const SizedBox(height: AppSpacing.marginLarge),
           Text(
-            'Ang tulay mula sa salita patungo sa unawa.',
+            'Sikhay.',
             style: AppTypography.headingSmall.copyWith(color: AppColors.textPrimary),
           ),
           const SizedBox(height: AppSpacing.marginLarge),

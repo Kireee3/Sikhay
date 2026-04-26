@@ -8,6 +8,8 @@ import '../placeholder/placeholder_screen.dart';
 import '../constellation/constellation_screen.dart' as constellation;
 import '../lesson/lesson_screen.dart';
 
+
+
 /// Main app shell with BottomNavigationBar for navigation between screens.
 /// 
 /// Manages the navigation state and displays the appropriate screen based on
