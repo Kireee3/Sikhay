@@ -1,3 +1,4 @@
+//lesson_content.dart
 /// Model for lesson content with textual and contextual explanations.
 /// 
 /// Each lesson contains:
@@ -40,6 +41,180 @@ class LessonContent {
     required this.applications,
     this.diagramInfo,
   });
+
+  /// Factory constructor for Nitrogen Cycle lesson
+  factory LessonContent.nitrogenCycle() {
+    return LessonContent(
+      subject: 'Biology',
+      level: 'Level 2',
+      title: 'Nitrogen Cycle',
+      textualDescription:
+          'The continuous environmental process involving five stages (nitrogen fixation, assimilation, ammonification, nitrification, and denitrification) through which nitrogen, a key element necessary for living organisms, is circulated. The purpose of the nitrogen cycle is to make atmospheric nitrogen available to living organisms and to return nitrogen to the atmosphere, ensuring a sustainable supply of this essential nutrient for life on Earth.',
+      contextExplanation:
+          'Nitrogen is an essential element for all living organisms, forming the backbone of proteins and nucleic acids. The nitrogen cycle is nature\'s way of recycling this vital element. Without this cycle, life as we know it would not exist. Understanding the nitrogen cycle is crucial for agriculture, environmental science, and addressing issues like nutrient pollution.',
+      examples: [
+        'Legume crops (beans, peas) have nitrogen-fixing bacteria in their root nodules',
+        'Decomposing leaves release nitrogen back into the soil',
+        'Fertilizers are used to supplement nitrogen in agricultural soils',
+        'Wetlands filter excess nitrogen from agricultural runoff',
+      ],
+      applications: [
+        'Agriculture: Using nitrogen-fixing crops to maintain soil fertility',
+        'Environmental Science: Managing nitrogen pollution in water systems',
+        'Biotechnology: Studying nitrogen-fixing bacteria for sustainable farming',
+        'Climate Science: Understanding nitrogen cycling in different ecosystems',
+      ],
+      diagramInfo: DiagramInfo(
+        elements: ['Atmosphere', 'Bacteria', 'Plants', 'Soil'],
+        emojis: ['🌫️', '🦠', '🌱', '🌍'],
+      ),
+    );
+  }
+
+  /// Factory constructor for Nitrogen Fixation lesson
+  factory LessonContent.nitrogenFixation() {
+    return LessonContent(
+      subject: 'Biology',
+      level: 'Level 2',
+      title: 'Nitrogen Fixation',
+      textualDescription:
+          'The process by which atmospheric nitrogen (N2) is converted into usable ammonia (NH3), either through lightning or by nitrogen-fixing bacteria such as Rhizobium found in the environment or plant root nodules.',
+      contextExplanation:
+          'Nitrogen fixation is the critical first step of the nitrogen cycle. Most atmospheric nitrogen cannot be directly used by plants. Specialized bacteria have evolved the ability to break the strong triple bond in N2 and convert it to ammonia. This process is essential for life on Earth.',
+      examples: [
+        'Rhizobium bacteria live in root nodules of legume plants',
+        'Lightning can fix nitrogen by creating nitrogen oxides',
+        'Cyanobacteria in oceans fix nitrogen for marine ecosystems',
+        'Farmers plant legumes to naturally fix nitrogen in soil',
+      ],
+      applications: [
+        'Agriculture: Crop rotation with legumes to maintain soil nitrogen',
+        'Biotechnology: Studying nitrogen-fixing bacteria for genetic engineering',
+        'Industrial: Haber-Bosch process for artificial nitrogen fixation',
+        'Sustainability: Reducing reliance on synthetic fertilizers',
+      ],
+      diagramInfo: DiagramInfo(
+        elements: ['Atmosphere N2', 'Bacteria', 'Ammonia NH3'],
+        emojis: ['🌫️', '🦠', '💧'],
+      ),
+    );
+  }
+
+  /// Factory constructor for Assimilation lesson
+  factory LessonContent.assimilation() {
+    return LessonContent(
+      subject: 'Biology',
+      level: 'Level 2',
+      title: 'Assimilation',
+      textualDescription:
+          'The uptake and utilization of nitrates and nitrites by plants to synthesize essential proteins and nucleic acids.',
+      contextExplanation:
+          'Assimilation is how plants use fixed nitrogen to build the proteins and DNA they need to grow. This is the bridge between the nitrogen cycle and living organisms. Without assimilation, the nitrogen cycle would have no purpose.',
+      examples: [
+        'Plants absorb nitrates through their root systems',
+        'Nitrogen is incorporated into amino acids and proteins',
+        'Green vegetables are rich in plant proteins made from assimilated nitrogen',
+        'Plant growth rate depends on available nitrogen',
+      ],
+      applications: [
+        'Agriculture: Optimizing nitrogen fertilizer application',
+        'Nutrition: Understanding protein content in plant-based foods',
+        'Horticulture: Managing plant nutrition for optimal growth',
+        'Environmental Science: Predicting plant productivity',
+      ],
+      diagramInfo: DiagramInfo(
+        elements: ['Nitrates', 'Plant Roots', 'Proteins'],
+        emojis: ['💧', '🌿', '🧬'],
+      ),
+    );
+  }
+
+  /// Factory constructor for Ammonification lesson
+  factory LessonContent.ammonification() {
+    return LessonContent(
+      subject: 'Biology',
+      level: 'Level 2',
+      title: 'Ammonification',
+      textualDescription:
+          'The process performed by soil bacteria and fungi (decomposers) that breaks down the amino acids and nucleic acids of dead plants and animals, returning nitrogen to the soil as nitrates and ammonia.',
+      contextExplanation:
+          'Ammonification is nature\'s recycling process for nitrogen. When organisms die, decomposers break down their proteins and return nitrogen to the soil. This process is essential for nutrient cycling in ecosystems.',
+      examples: [
+        'Decomposing leaves release nitrogen into soil',
+        'Compost piles generate ammonia as organic matter breaks down',
+        'Soil bacteria break down dead organisms',
+        'Nitrogen from dead animals enriches soil',
+      ],
+      applications: [
+        'Composting: Creating nutrient-rich soil amendments',
+        'Waste Management: Treating organic waste sustainably',
+        'Soil Science: Understanding soil nutrient cycling',
+        'Agriculture: Maximizing nutrient recovery from crop residues',
+      ],
+      diagramInfo: DiagramInfo(
+        elements: ['Dead Organisms', 'Decomposers', 'Ammonia'],
+        emojis: ['💀', '🦠', '💨'],
+      ),
+    );
+  }
+
+  /// Factory constructor for Nitrification lesson
+  factory LessonContent.nitrification() {
+    return LessonContent(
+      subject: 'Biology',
+      level: 'Level 2',
+      title: 'Nitrification',
+      textualDescription:
+          'The process immediately following nitrogen fixation that converts ammonia into nitrates or nitrites, making it readily available for plant absorption.',
+      contextExplanation:
+          'Nitrification is the process that makes nitrogen available to plants. Specialized bacteria oxidize ammonia into nitrates, which plants can readily absorb. This is a critical link in the nitrogen cycle.',
+      examples: [
+        'Nitrosomonas bacteria convert ammonia to nitrite',
+        'Nitrobacter bacteria convert nitrite to nitrate',
+        'Nitrification occurs in soil and aquatic environments',
+        'Nitrifying bacteria are used in wastewater treatment',
+      ],
+      applications: [
+        'Wastewater Treatment: Removing nitrogen from treated water',
+        'Aquaculture: Maintaining nitrogen balance in fish tanks',
+        'Soil Management: Understanding nitrogen availability',
+        'Environmental Science: Predicting nitrogen cycling rates',
+      ],
+      diagramInfo: DiagramInfo(
+        elements: ['Ammonia', 'Nitrifying Bacteria', 'Nitrates'],
+        emojis: ['💨', '🦠', '💧'],
+      ),
+    );
+  }
+
+  /// Factory constructor for Denitrification lesson
+  factory LessonContent.denitrification() {
+    return LessonContent(
+      subject: 'Biology',
+      level: 'Level 2',
+      title: 'Denitrification',
+      textualDescription:
+          'The process by which denitrifying bacteria reduce soil nitrates and nitrites into gaseous nitrogen and nitrous oxide, returning free nitrogen to the atmosphere and potentially depleting soil fertility.',
+      contextExplanation:
+          'Denitrification completes the nitrogen cycle by returning nitrogen to the atmosphere. While this process can deplete soil nitrogen, it\'s essential for maintaining atmospheric nitrogen balance. Understanding denitrification is important for agriculture and environmental management.',
+      examples: [
+        'Waterlogged soils promote denitrification',
+        'Denitrifying bacteria thrive in anaerobic conditions',
+        'Nitrous oxide (N2O) is a potent greenhouse gas from denitrification',
+        'Constructed wetlands use denitrification to remove nitrogen from water',
+      ],
+      applications: [
+        'Wastewater Treatment: Using denitrification to remove excess nitrogen',
+        'Environmental Science: Reducing nitrogen pollution in water bodies',
+        'Climate Science: Understanding N2O emissions from agriculture',
+        'Soil Management: Preventing nitrogen loss from agricultural soils',
+      ],
+      diagramInfo: DiagramInfo(
+        elements: ['Nitrates', 'Denitrifying Bacteria', 'Nitrogen Gas'],
+        emojis: ['💧', '🦠', '🌫️'],
+      ),
+    );
+  }
 
   /// Factory constructor for Photosynthesis lesson
   factory LessonContent.photosynthesis() {

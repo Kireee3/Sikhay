@@ -1,3 +1,4 @@
+//app_locales.dart
 class AppLocales {
   static const Map<String, Map<String, String>> translations = {
     'English': {
@@ -30,6 +31,7 @@ class AppLocales {
       'mastery': 'Mastery',
       'explore_lesson': 'Explore the Lesson',
       'soon': 'To be released soon',
+      'nitrogen_textbook': 'Explore the continuous environmental process of nitrogen circulation through five key stages.',
     },
     'Tagalog': {
       'welcome_title': 'Maligayang pagdating sa Sikhay',
@@ -61,6 +63,7 @@ class AppLocales {
       'mastery': 'Kahusayan',
       'explore_lesson': 'Tuklasin ang Aralin',
       'soon': 'Ilalabas na sa madaling panahon',
+      'nitrogen_textbook': 'Tuklasin ang patuloy na proseso ng kapaligiran ng sirkulasyon ng nitrogen sa pamamagitan ng limang pangunahing yugto.',
     },
     'Bisaya': {
       'welcome_title': 'Maayong pag-abot sa Sikhay',
@@ -92,6 +95,7 @@ class AppLocales {
       'mastery': 'Kahanas',
       'explore_lesson': 'Suhira ang Leksyon',
       'soon': 'Ipagawas na sa dili madugay',
+      'nitrogen_textbook': 'Tuklasin ang patuloy na proseso sa kapaligiran ng sirkulasyon ng nitrogen sa pamamagitan ng limang pangunahing yugto.',
     }
   };
 

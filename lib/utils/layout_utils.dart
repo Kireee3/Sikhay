@@ -87,16 +87,15 @@ bool isPointInCircle(
 /// - [curve]: Animation curve to apply (default: linear)
 /// 
 /// Returns: Interpolated offset at the given progress
-  Offset offsetLerpWithCurve({
-    required Offset begin,
-    required Offset end,
-    required double progress,
-    Curve curve = Curves.linear, // Now this default value is allowed!
-  }) {
+Offset offsetLerpWithCurve({
+  required Offset begin,
+  required Offset end,
+  required double progress,
+  Curve curve = Curves.linear,
+}) {
   // Apply curve to progress value
   final curvedProgress = curve.transform(progress);
   
   // Use Flutter's built-in Offset.lerp for interpolation
   return Offset.lerp(begin, end, curvedProgress) ?? begin;
 }
-//bagong lagay

@@ -1,92 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:sikhay/constants/app_colors.dart';
-import 'package:sikhay/constants/app_spacing.dart';
-import 'package:sikhay/constants/app_typography.dart';
-import 'package:sikhay/models/concept.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_spacing.dart';
+import '../../constants/app_typography.dart';
+import '../../models/concept.dart';
 import '../home/home_screen.dart';
-import '../placeholder/placeholder_screen.dart';
-import '../constellation/constellation_screen.dart' as constellation;
+import '../constellation/constellation_screen.dart';
 import '../lesson/lesson_screen.dart';
 
-
-
-/// Main app shell with BottomNavigationBar for navigation between screens.
-/// 
-/// Manages the navigation state and displays the appropriate screen based on
-/// the selected navigation item. Handles navigation between Constellation and
-/// Lesson screens. Implements null-safe code with proper state management.
-class AppShell extends StatefulWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
 
   @override
-  State<AppShell> createState() => _AppShellState();
+  ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
-  /// Currently selected navigation index
+class _AppShellState extends ConsumerState<AppShell> {
   int _selectedIndex = 0;
 
-  /// Currently displayed lesson concept (null if not viewing lesson)
-  ConceptNode? _currentLessonConcept;
-
-  /// List of screens for each navigation item
   late final List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
-    _initializeScreens();
-  }
-
-  /// Initialize screens list
-void _initializeScreens() {
     _screens = [
       // Home screen
       HomeDashboardScreen(
         onResumePressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Resume Study tapped')),
+          // Navigate to LessonScreen for Nitrogen Cycle
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LessonScreen(
+                conceptNode: ConceptNode.nitrogenCycle(),
+                onBackPressed: () => Navigator.pop(context),
+              ),
+            ),
           );
         },
         onViewMapPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('View Map tapped')),
-          );
+          // Navigate to Constellation screen
+          setState(() {
+            _selectedIndex = 2;
+          });
         },
       ),
-      // Constellation screen (Explore screen was removed from here!)
-      constellation.ConstellationScreen(
-        initialNode: ConceptNode.photosynthesis(),
-        onOpenLesson: _handleOpenLesson,
+      // Explore screen
+      const ExploreScreen(),
+      // Constellation screen
+      ConstellationScreen(
+        initialNode: ConceptNode.nitrogenCycle(),
+        onOpenLesson: (concept) {
+          // Navigate to LessonScreen when tapping any node
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LessonScreen(
+                conceptNode: concept,
+                onBackPressed: () => Navigator.pop(context),
+              ),
+            ),
+          );
+        },
+        onBackPressed: () {
+          // Go back to Home tab
+          setState(() {
+            _selectedIndex = 0;
+          });
+        },
       ),
       // Profile screen
       const ProfileScreen(),
     ];
   }
 
-  /// Handle opening lesson from constellation
-  void _handleOpenLesson(ConceptNode conceptNode) {
-    setState(() {
-      _currentLessonConcept = conceptNode;
-    });
-  }
-
-  /// Handle closing lesson and returning to constellation
-  void _handleCloseLesson() {
-    setState(() {
-      _currentLessonConcept = null;
-    });
-  }
-
-  /// Handle navigation item tap
   void _onNavItemTapped(int index) {
-    // Close lesson if open when navigating to different tab
-    if (_currentLessonConcept != null) {
-      setState(() {
-        _currentLessonConcept = null;
-      });
-    }
-
     setState(() {
       _selectedIndex = index;
     });
@@ -94,23 +82,9 @@ void _initializeScreens() {
 
   @override
   Widget build(BuildContext context) {
-    // If lesson is open, show lesson screen instead of navigation
-    if (_currentLessonConcept != null) {
-      return Scaffold(
-        backgroundColor: AppColors.background,
-        body: LessonScreen(
-          conceptNode: _currentLessonConcept!,
-          onBackPressed: _handleCloseLesson,
-        ),
-      );
-    }
-
-    // Otherwise show normal navigation
     return Scaffold(
-      // Scaffold for basic Material app structure
       backgroundColor: AppColors.background,
       body: IndexedStack(
-        // IndexedStack to maintain state of all screens
         index: _selectedIndex,
         children: _screens,
       ),
@@ -118,10 +92,8 @@ void _initializeScreens() {
     );
   }
 
-  /// Build the bottom navigation bar
   Widget _buildBottomNavigationBar() {
     return Container(
-      // Container with custom styling for the navigation bar
       decoration: BoxDecoration(
         color: AppColors.background,
         border: Border(
@@ -132,7 +104,6 @@ void _initializeScreens() {
         ),
       ),
       child: BottomNavigationBar(
-        // BottomNavigationBar for navigation between screens
         currentIndex: _selectedIndex,
         onTap: _onNavItemTapped,
         type: BottomNavigationBarType.fixed,
@@ -147,11 +118,9 @@ void _initializeScreens() {
           color: AppColors.textTertiary,
         ),
         items: [
-          // Home navigation item
           BottomNavigationBarItem(
             icon: const Icon(Icons.home_outlined),
             activeIcon: Container(
-              // Active state with background
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.paddingLarge,
                 vertical: AppSpacing.paddingSmall,
@@ -164,12 +133,24 @@ void _initializeScreens() {
             ),
             label: 'Home',
           ),
-
-          // Constellation navigation item - highlighted when selected
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.explore_outlined),
+            activeIcon: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.paddingLarge,
+                vertical: AppSpacing.paddingSmall,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+              ),
+              child: const Icon(Icons.explore),
+            ),
+            label: 'Explore',
+          ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.auto_awesome_outlined),
             activeIcon: Container(
-              // Active state with background - highlighted in primary color
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.paddingLarge,
                 vertical: AppSpacing.paddingSmall,
@@ -182,12 +163,9 @@ void _initializeScreens() {
             ),
             label: 'Constellation',
           ),
-
-          // Profile navigation item
           BottomNavigationBarItem(
             icon: const Icon(Icons.person_outline),
             activeIcon: Container(
-              // Active state with background
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.paddingLarge,
                 vertical: AppSpacing.paddingSmall,
@@ -201,6 +179,86 @@ void _initializeScreens() {
             label: 'Profile',
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Explore Screen Placeholder
+class ExploreScreen extends StatelessWidget {
+  const ExploreScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.explore,
+                size: 64,
+                color: AppColors.primary,
+              ),
+              const SizedBox(height: AppSpacing.marginLarge),
+              Text(
+                'Explore Topics',
+                style: AppTypography.headingMedium.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.marginMedium),
+              Text(
+                'Discover new learning topics',
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Profile Screen Placeholder
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.person,
+                size: 64,
+                color: AppColors.primary,
+              ),
+              const SizedBox(height: AppSpacing.marginLarge),
+              Text(
+                'Your Profile',
+                style: AppTypography.headingMedium.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.marginMedium),
+              Text(
+                'Track your learning progress',
+                style: AppTypography.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

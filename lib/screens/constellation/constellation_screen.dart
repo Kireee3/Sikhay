@@ -1,3 +1,4 @@
+// constellation_screen.dart
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
@@ -200,7 +201,7 @@ class _ConstellationScreenState extends State<ConstellationScreen>
                   label: satellites[i].label,
                   size: satelliteNodeSize,
                   isCenter: false,
-                  onTap: () => _navigateTo(satellites[i]),
+                  onTap: () => widget.onOpenLesson?.call(satellites[i]),
                 ),
               ),
 

@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:sikhay/constants/app_colors.dart';
-import 'package:sikhay/constants/app_spacing.dart';
-import 'package:sikhay/constants/app_typography.dart';
-import 'package:sikhay/models/concept.dart';
-import 'package:sikhay/models/lesson_content.dart';
-import 'package:sikhay/widgets/lesson_header.dart';
-import 'package:sikhay/widgets/lesson_card.dart';
-import 'package:sikhay/widgets/comprehension_check.dart';
-import 'package:sikhay/screens/lesson/contextual_based.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_spacing.dart';
+import '../../constants/app_typography.dart';
+import '../../models/concept.dart';
+import '../../models/lesson_content.dart';
+import '../../widgets/lesson_header.dart';
+import '../../widgets/lesson_card.dart';
+import 'contextual_based.dart';
 
-/// Lesson View screen displaying dynamic lesson content with comprehension check.
-/// 
+/// Lesson View screen displaying dynamic lesson content.
+///
 /// Features:
 /// - Accepts ConceptNode parameter for dynamic content
-/// - Enhanced header with language selector (English, Tagalog, Bisaya)
+/// - Enhanced header with centered Sikhay title
 /// - Lesson content card with title, description, and visual diagram
-/// - Content toggle: Textual Based | Contextual Based
-/// - Comprehension check with emoji reactions (😕 🤔 ✅)
-/// - Dynamic content for all 6 concepts (Photosynthesis, Chlorophyll, Oxygen, etc.)
-/// - "Go Deeper" button REMOVED as per requirements
-/// 
+/// - Content toggle: Textual Based | Contextual Based (AI-powered)
+/// - Dynamic content for all concepts (Nitrogen Cycle stages, etc.)
+///
 /// Uses SingleChildScrollView for scrollable content.
-/// Implements null-safe code with proper state management.
 class LessonScreen extends StatefulWidget {
   /// The concept node to display lesson for
   final ConceptNode conceptNode;
@@ -47,12 +43,21 @@ class _LessonScreenState extends State<LessonScreen> {
   /// Currently selected language
   String _selectedLanguage = 'en';
 
-  /// Currently selected comprehension reaction
-  String? _selectedReaction;
-
   /// Get lesson content based on concept node ID
   LessonContent _getLessonContent(String conceptId) {
     switch (conceptId) {
+      case 'nitrogen_cycle':
+        return LessonContent.nitrogenCycle();
+      case 'nitrogen_fixation':
+        return LessonContent.nitrogenFixation();
+      case 'assimilation':
+        return LessonContent.assimilation();
+      case 'ammonification':
+        return LessonContent.ammonification();
+      case 'nitrification':
+        return LessonContent.nitrification();
+      case 'denitrification':
+        return LessonContent.denitrification();
       case 'photosynthesis':
         return LessonContent.photosynthesis();
       case 'chlorophyll':
@@ -66,7 +71,7 @@ class _LessonScreenState extends State<LessonScreen> {
       case 'glucose':
         return LessonContent.glucose();
       default:
-        return LessonContent.photosynthesis();
+        return LessonContent.nitrogenCycle();
     }
   }
 
@@ -78,17 +83,13 @@ class _LessonScreenState extends State<LessonScreen> {
     widget.onLanguageChanged?.call(languageCode);
   }
 
-  /// Handle comprehension reaction selection
-  void _handleReactionSelected(String reactionCode) {
-    setState(() {
-      _selectedReaction = reactionCode;
-    });
-    // Here you would typically save the reaction to the backend
-  }
-
   /// Handle back button press
   void _handleBackPressed() {
-    widget.onBackPressed?.call();
+    if (widget.onBackPressed != null) {
+      widget.onBackPressed!();
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -96,9 +97,15 @@ class _LessonScreenState extends State<LessonScreen> {
     // Get lesson content for the current concept
     final lessonContent = _getLessonContent(widget.conceptNode.id);
 
-    // Create contextual content widget
+    // Map language code to AI service format
+    final aiLanguageCode = _mapLanguageCode(_selectedLanguage);
+
+    // Create contextual content widget with AI-powered explanations
     final contextualContent = ContextualBased(
       title: lessonContent.title,
+      conceptTitle: widget.conceptNode.label,
+      coreDefinition: lessonContent.title, // Use title as core definition
+      language: aiLanguageCode,
       contextExplanation: lessonContent.contextExplanation,
       examples: lessonContent.examples,
       applications: lessonContent.applications,
@@ -121,32 +128,31 @@ class _LessonScreenState extends State<LessonScreen> {
           // Column for vertical arrangement of screen content
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Back Button (if onBackPressed is provided) ──────────────────
-            if (widget.onBackPressed != null)
-              Padding(
-                padding: const EdgeInsets.only(
-                  bottom: AppSpacing.marginLarge,
-                ),
-                child: GestureDetector(
-                  onTap: _handleBackPressed,
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.arrow_back_ios_new,
+            // ── Back Button ────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: AppSpacing.marginLarge,
+              ),
+              child: GestureDetector(
+                onTap: _handleBackPressed,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: AppColors.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: AppSpacing.marginSmall),
+                    Text(
+                      'Back to Constellation',
+                      style: AppTypography.labelMedium.copyWith(
                         color: AppColors.primary,
-                        size: 20,
                       ),
-                      const SizedBox(width: AppSpacing.marginSmall),
-                      Text(
-                        'Back to Constellation',
-                        style: AppTypography.labelMedium.copyWith(
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
+            ),
 
             // ── Lesson Content Card with Dynamic Content ────────────────────
             LessonCard(
@@ -159,25 +165,37 @@ class _LessonScreenState extends State<LessonScreen> {
                 // Handle audio playback
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Playing audio for ${lessonContent.title}...'),
+                    content:
+                        Text('Playing audio for ${lessonContent.title}...'),
                     duration: const Duration(seconds: 1),
                   ),
                 );
               },
-              // Contextual content widget
+              // Contextual content widget with AI-powered explanations
               contextualContent: contextualContent,
-            ),
-            const SizedBox(height: AppSpacing.marginLarge),
-
-            // ── Comprehension Check ────────────────────────────────────────
-            ComprehensionCheck(
-              selectedReaction: _selectedReaction,
-              onReactionSelected: _handleReactionSelected,
             ),
             const SizedBox(height: AppSpacing.marginLarge),
           ],
         ),
       ),
     );
+  }
+
+  /// Map language code from lesson header to AI service format
+  String _mapLanguageCode(String lessonLanguageCode) {
+    switch (lessonLanguageCode.toLowerCase()) {
+      case 'english':
+      case 'en':
+        return 'en';
+      case 'tagalog':
+      case 'tl':
+      case 'fil':
+        return 'tl';
+      case 'bisaya':
+      case 'ceb':
+        return 'ceb';
+      default:
+        return 'en';
+    }
   }
 }
