@@ -2,149 +2,336 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_spacing.dart';
 import '../../constants/app_typography.dart';
+import '../../services/ai_explanation_service.dart';
 
-/// Widget for displaying context-based explanation of a lesson topic.
-/// 
-/// Provides real-world context and practical examples for better understanding.
-/// Uses Column layout for vertical arrangement of content.
-class ContextualBased extends StatelessWidget {
-  /// Topic title
+/// Contextual Based content view with AI-powered explanations at 3 difficulty levels.
+///
+/// Features:
+/// - Level 1 (Curious): Basic explanation with real-world connection
+/// - Level 2 (Struggling): Simpler explanation with everyday analogy
+/// - Level 3 (ELI5): Simplest explanation for 12-year-olds
+/// - Dynamic AI-generated content using OpenAI API
+class ContextualBased extends StatefulWidget {
+  /// Lesson title
   final String title;
 
-  /// Context-based explanation text
-  final String contextExplanation;
+  /// Core definition of the concept
+  final String coreDefinition;
 
-  /// Real-world examples
+  /// Concept title for AI prompt
+  final String conceptTitle;
+
+  /// Current language code ('en', 'tl', 'ceb')
+  final String language;
+
+  /// List of real-world examples (kept for backwards compatibility but not displayed)
   final List<String> examples;
 
-  /// Practical applications
+  /// List of practical applications (kept for backwards compatibility but not displayed)
   final List<String> applications;
+
+  /// Context explanation (kept for backwards compatibility but not displayed)
+  final String contextExplanation;
 
   const ContextualBased({
     super.key,
     required this.title,
-    required this.contextExplanation,
-    required this.examples,
-    required this.applications,
+    this.coreDefinition = '',
+    this.conceptTitle = '',
+    this.language = 'en',
+    this.examples = const [],
+    this.applications = const [],
+    this.contextExplanation = '',
   });
+
+  @override
+  State<ContextualBased> createState() => _ContextualBasedState();
+}
+
+class _ContextualBasedState extends State<ContextualBased> {
+  /// Current selected difficulty level (1, 2, or 3)
+  int _selectedLevel = 1;
+
+  /// AI-generated explanation text
+  String? _explanation;
+
+  /// Loading state
+  bool _isLoading = false;
+
+  /// Error message
+  String? _error;
+
+  final AIExplanationService _aiService = AIExplanationService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Generate initial explanation for Level 1
+    _generateExplanation(1);
+  }
+
+  /// Convert title to concept ID (e.g., "Nitrogen Fixation" -> "nitrogen_fixation")
+  String _getTitleAsConceptId() {
+    return widget.title
+        .toLowerCase()
+        .replaceAll(' ', '_')
+        .replaceAll('₂', '2')
+        .replaceAll('₃', '3');
+  }
+
+  /// Generate explanation for the selected level
+  Future<void> _generateExplanation(int level) async {
+    setState(() {
+      _selectedLevel = level;
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final conceptId = _getTitleAsConceptId();
+      
+      final explanation = await _aiService.generateExplanation(
+        conceptTitle: widget.conceptTitle,
+        conceptId: conceptId,
+        level: level,
+        language: widget.language,
+      );
+
+      setState(() {
+        _explanation = explanation;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'Failed to generate explanation: $e';
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      // Column for vertical arrangement of contextual content
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Context Explanation Section
-        _buildSection(
-          title: 'Context',
-          content: contextExplanation,
-          icon: '🌍',
-        ),
+        // ── Level Selector ─────────────────────────────────────────────────
+        _buildLevelSelector(),
         const SizedBox(height: AppSpacing.marginLarge),
 
-        // Real-World Examples Section
-        _buildSection(
-          title: 'Real-World Examples',
-          content: examples.join('\n• '),
-          icon: '💡',
-          isList: true,
-        ),
-        const SizedBox(height: AppSpacing.marginLarge),
+        // ── Explanation Card ───────────────────────────────────────────────
+        if (_isLoading)
+          _buildLoadingCard()
+        else if (_error != null)
+          _buildErrorCard()
+        else
+          _buildExplanationCard(),
+      ],
+    );
+  }
 
-        // Practical Applications Section
-        _buildSection(
-          title: 'Practical Applications',
-          content: applications.join('\n• '),
-          icon: '⚙️',
-          isList: true,
+  /// Build level selector buttons
+  Widget _buildLevelSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Choose your learning level:',
+          style: AppTypography.labelMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.marginSmall),
+        Row(
+          children: [
+            _buildLevelButton(
+              level: 1,
+              label: 'Curious',
+              emoji: '🤔',
+            ),
+            const SizedBox(width: AppSpacing.marginSmall),
+            _buildLevelButton(
+              level: 2,
+              label: 'Struggling',
+              emoji: '🤨',
+            ),
+            const SizedBox(width: AppSpacing.marginSmall),
+            _buildLevelButton(
+              level: 3,
+              label: 'ELI5',
+              emoji: '👶',
+            ),
+          ],
         ),
       ],
     );
   }
 
-  /// Build a section with title, icon, and content
-  Widget _buildSection({
-    required String title,
-    required String content,
-    required String icon,
-    bool isList = false,
+  /// Build individual level button
+  Widget _buildLevelButton({
+    required int level,
+    required String label,
+    required String emoji,
   }) {
-    return Column(
-      // Column for section content
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Section Title with Icon
-        Row(
-          children: [
-            Text(
-              icon,
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(width: AppSpacing.marginSmall),
-            Text(
-              title,
-              style: AppTypography.headingSmall.copyWith(
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.marginSmall),
+    final isSelected = _selectedLevel == level;
 
-        // Section Content
-        Container(
-          // Container for content with background
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-            color: AppColors.background,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _generateExplanation(level),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.paddingMedium,
+            horizontal: AppSpacing.paddingSmall,
           ),
-          padding: const EdgeInsets.all(AppSpacing.paddingMedium),
-          child: Text(
-            isList ? '• $content' : content,
+          decoration: BoxDecoration(
+            color: isSelected ? AppColors.primaryLight : AppColors.surfaceLight,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+            border: Border.all(
+              color: isSelected ? AppColors.primary : AppColors.borderLight,
+              width: isSelected ? 2.0 : 1.0,
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                emoji,
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                label,
+                style: AppTypography.labelSmall.copyWith(
+                  color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Build explanation card
+  Widget _buildExplanationCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.paddingLarge),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+        border: Border.all(color: AppColors.borderLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Text(
+                '📖',
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(width: AppSpacing.marginSmall),
+              Expanded(
+                child: Text(
+                  'Explanation',
+                  style: AppTypography.headingSmall.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.marginMedium),
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Text(
+              _explanation ?? 'No explanation available',
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.textPrimary,
+                height: 1.5,
+              ),
+              maxLines: null,
+              softWrap: true,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build loading card
+  Widget _buildLoadingCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.paddingLarge),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+        border: Border.all(color: AppColors.borderLight),
+      ),
+      child: Column(
+        children: [
+          const CircularProgressIndicator(
+            color: AppColors.primary,
+          ),
+          const SizedBox(height: AppSpacing.marginMedium),
+          Text(
+            'Generating explanation...',
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build error card
+  Widget _buildErrorCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.paddingLarge),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceLight,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+        border: Border.all(color: AppColors.borderLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Error',
+            style: AppTypography.headingSmall.copyWith(
+              color: AppColors.error,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.marginSmall),
+          Text(
+            _error ?? 'An unknown error occurred',
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
               height: 1.6,
             ),
+            maxLines: null,
+            overflow: TextOverflow.visible,
           ),
-        ),
-      ],
+          const SizedBox(height: AppSpacing.marginMedium),
+          GestureDetector(
+            onTap: () => _generateExplanation(_selectedLevel),
+            child: Text(
+              'Retry',
+              style: AppTypography.labelMedium.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
-
-/// Model for contextual lesson content
-class ContextualLessonContent {
-  final String title;
-  final String contextExplanation;
-  final List<String> examples;
-  final List<String> applications;
-
-  ContextualLessonContent({
-    required this.title,
-    required this.contextExplanation,
-    required this.examples,
-    required this.applications,
-  });
-
-  /// Example: Photosynthesis contextual content
-  factory ContextualLessonContent.photosynthesis() {
-    return ContextualLessonContent(
-      title: 'Photosynthesis',
-      contextExplanation:
-          'Photosynthesis is nature\'s way of converting solar energy into chemical energy. Every plant on Earth uses this process to survive and grow. Without photosynthesis, there would be no oxygen for us to breathe and no food chain to sustain life.',
-      examples: [
-        'Green leaves turning brown in autumn as photosynthesis slows down',
-        'Plants growing faster in spring when there\'s more sunlight',
-        'Aquatic plants producing oxygen bubbles during the day',
-        'Farmers rotating crops to maintain soil nutrients produced by photosynthesis',
-      ],
-      applications: [
-        'Agriculture: Optimizing crop yields by understanding light exposure',
-        'Renewable Energy: Developing artificial photosynthesis for clean energy',
-        'Climate Change: Using plants to absorb CO2 from the atmosphere',
-        'Space Exploration: Growing food on spacecraft using controlled photosynthesis',
-      ],
-    );
-  }
-}
-//bagong lagay
